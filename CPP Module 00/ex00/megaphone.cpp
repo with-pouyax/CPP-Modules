@@ -1,22 +1,37 @@
+// Hedge case: ./megaphone "$(printf 'Hello\xFFWorld')"
+
 #include <iostream>
 #include <string>
 
-std::string trimm (std::string str)
+std::string trimm(std::string str)
 {
-    int start = 0;
-    int end = str.size() - 1;
+    int start;
+    int end;
 
-    for (start; isspace(str[start]); start++);   
-    for (end; isspace(str[end]); end--);
-    return (str.substr(start, end));
+    for (start = 0; isspace(str[start]); start++);
+    for (end = str.size() - 1; isspace(str[end]); end--);
+    if (start > end) return "";
+
+    return str.substr(start, (end - start ) + 1);
 }
 
-std::string process (std::string argument)
+std::string upper(std::string str)
 {
-    std::string trimmed = trimm(argument);
-    std::cout << trimmed << "\n";
+    for (int i = 0; str[i]; i++)
+        str[i] = toupper(str[i]);
+    return str;
+}
 
-    return NULL;
+void process (std::string argument, int i)
+{
+    if (argument.empty()) return;
+    argument = trimm(argument);
+    argument = upper(argument);
+    
+    //std::cout << "+" <<argument << "+";
+    if (argument.empty()) return;
+    std::cout << (i == 1 ? argument : " " + argument);
+    return;
 }
 
 
@@ -26,7 +41,8 @@ int main(int argc, char **argv)
     {
         for (int i = 1; i < argc; i++)
         {
-            process(argv[i]);
+            process(argv[i], i);
         }
     }
+    std::cout<< ".\n";
 }
