@@ -1,5 +1,13 @@
-# CPP-Modules
+![C++ GIF](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2R1Mm52ZHJ2bWZ5bTJ1Y3d5bDRwYzNmdzVpbDFybG0xY2NsaHJ3eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QpVUMRUJGokfqXyfa1/giphy.gif)
 
+# **CPP-Modules**
+
+## **What are CPP-Modules?**
+CPP-Modules are a series of structured exercises designed by **42 School** to teach fundamental and advanced C++ concepts. They follow a progressive approach, ensuring students develop a deep understanding of object-oriented programming, memory management, and proper coding practices. Each module consists of multiple exercises that build upon previous knowledge, helping students master the language step by step.
+
+I am working on **CPP Modules 00 to 09** from **42**. Each module consists of multiple exercises, and inside each exercise folder, I provide an explanation of its content and purpose.
+
+---
 
 # **General Rules**
 
