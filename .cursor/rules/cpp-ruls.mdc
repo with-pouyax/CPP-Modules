@@ -1,0 +1,6 @@
+---
+description: cpp rules
+globs: 
+---
+
+for all projects in C++ follow these rules strictly : [cpp_rules.md](mdc:cpp_rules.md)
