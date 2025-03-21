@@ -11,8 +11,8 @@ class Contact {
         Contact();
         ~Contact();
 
-    //setter
-    void addContact(const Contact& contact);
+        //setter
+        void setFirstName(const std::string& firstName);
 };
 
 #endif

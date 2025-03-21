@@ -5,17 +5,15 @@
 
 class PhoneBook {
     private:
-        Contact _contacts[8];
+        Contact _contact[8];
         int _index;
 
     public:
         PhoneBook();
         ~PhoneBook();
 
-    //setters
-    //void setContact();
-
-
+        //setter
+        void saveContact(const Contact& newContact);
 };
 
 #endif

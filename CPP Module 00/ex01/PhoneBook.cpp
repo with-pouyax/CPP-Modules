@@ -1,8 +1,12 @@
 #include "PhoneBook.hpp"
 
-PhoneBook::PhoneBook() {};
+PhoneBook::PhoneBook() : _index(0) {};
 PhoneBook::~PhoneBook() {};
 
-void PhoneBook::
+//setter
+void PhoneBook::saveContact(const Contact& newContact)
+{
+    _contact[_index] = newContact;
+    _index++;
 
-
+}

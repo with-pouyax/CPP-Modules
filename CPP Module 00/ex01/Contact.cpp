@@ -1,17 +1,10 @@
 #include "Contact.hpp"
 
+Contact::Contact() : _firstName("") {};
+Contact::~Contact() {};
 
-Contact::Contact() : _firstName("") {}
-Contact::~Contact(){}
-
-void Contact::addContact(const Contact& contact)
+//setter
+void Contact::setFirstName(const std::string& firstName)
 {
-    this->_firstName = contact._firstName
+    this->_firstName = firstName;
 }
-
-
-
-
-
-
-
