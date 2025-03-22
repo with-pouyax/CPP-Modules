@@ -14,6 +14,10 @@ class PhoneBook {
 
         //setter
         void saveContact(const Contact& newContact);
+
+        //display
+        void displayAllContacts() const;
+        void displayContact(int index) const;
 };
 
 #endif
