@@ -1,6 +1,12 @@
 #include "Zombie.hpp"
 
-int main() {
+int main(int argc, char **argv) {
+
+    if (argc != 1) {
+        std::cout << "Usage: " << argv[0] << std::endl;
+        return 1;
+    }
+
     // HEAP ALLOCATION EXAMPLES
     std::cout << "--- Heap Allocation Examples ---" << std::endl;
     
