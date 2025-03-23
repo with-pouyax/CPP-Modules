@@ -8,6 +8,6 @@ Zombie* newZombie(std::string name) {
         return new Zombie(name);
     } catch (const std::bad_alloc& error) {
         std::cerr << "Memory allocation failed: " << error.what() << std::endl; //what() is a member function of the std::bad_alloc class that returns a string describing the error
-        return nullptr;
+        return NULL;
     }
 } 
