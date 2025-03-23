@@ -3,7 +3,7 @@
 int main(int argc, char **argv) {
 
     if (argc != 1) {
-        std::cout << "Usage: " << argv[0] << std::endl;
+        std::cerr << "Usage: " << argv[0] << std::endl;
         return 1;
     }
 
@@ -13,14 +13,14 @@ int main(int argc, char **argv) {
     // Create a heap zombie that exists beyond the scope
     Zombie* heapZombie1 = newZombie("Heap_Zombie1");
     if (heapZombie1 == NULL) {
-        std::cout << "Failed to create heap zombie" << std::endl;
+        std::cerr << "Failed to create heap zombie" << std::endl;
         return 1;
     }
     
     // Create another heap zombie
     Zombie* heapZombie2 = newZombie("Heap_Zombie2");
     if (heapZombie2 == NULL) {
-        std::cout << "Failed to create heap zombie" << std::endl;
+        std::cerr << "Failed to create heap zombie" << std::endl;
         delete heapZombie1;
         return 1;
     }
