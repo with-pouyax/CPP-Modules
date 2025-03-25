@@ -140,8 +140,11 @@ int main (int argc, char **argv)
     while (true)
     {
         displayMenu();
-        std::getline(std::cin, input); // if input is empty or anything other than ADD, SEARCH, or EXIT, it will run default section of switch
-                                       // also read space and tab and newline
+        if (!std::getline(std::cin, input)) // Check if input failed (EOF or error)
+        {
+            std::cout << "\n👋 EOF detected. Thank you for using Awesome PhoneBook! Goodbye!" << std::endl;
+            return 0;
+        }
         switch(getCommand(input))
         {
             case ADD:
