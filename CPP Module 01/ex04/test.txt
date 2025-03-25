@@ -1,0 +1,6 @@
+Hello World!
+This is a test file.
+We will replace some words.
+Replace this word: test
+And this one too: test
+The end. 
