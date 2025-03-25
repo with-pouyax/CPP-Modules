@@ -42,6 +42,7 @@ void displayMenu()
 // Function to get contact information from user
 Contact getContactFromUser()
 {
+    // we initialize the variables to store the contact information
     Contact newContact;
     std::string firstName;
     std::string lastName;
@@ -140,13 +141,13 @@ int main (int argc, char **argv)
     {
         displayMenu();
         std::getline(std::cin, input); // if input is empty or anything other than ADD, SEARCH, or EXIT, it will run default section of switch
-
+                                       // also read space and tab and newline
         switch(getCommand(input))
         {
             case ADD:
             {
-                Contact newContact = getContactFromUser();
-                phoneBook.saveContact(newContact);
+                Contact newContact = getContactFromUser(); // we get the contact from the user
+                phoneBook.saveContact(newContact);         // we save the contact to the phonebook
                 std::cout << "\n✅ Contact saved successfully!" << std::endl;
                 break;
             }
@@ -156,7 +157,7 @@ int main (int argc, char **argv)
                 std::cout << "🔍 SEARCH CONTACTS" << std::endl;
                 std::cout << "----------------" << std::endl;
                 
-                phoneBook.displayAllContacts();
+                phoneBook.displayAllContacts(); // we display all the contacts
                 
                 std::string indexStr; // this is the index of the contact that the user wants to view
                 
