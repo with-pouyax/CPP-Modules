@@ -55,11 +55,14 @@ Contact getContactFromUser()
     std::cout << "║         ✨ ADDING NEW CONTACT ✨         ║" << std::endl;
     std::cout << "╚══════════════════════════════════════════╝" << std::endl;
     
-    
     do
     {
         std::cout << "📝 Enter First Name: ";
-        std::getline(std::cin, firstName);
+        if (!std::getline(std::cin, firstName))
+        {
+            std::cout << "\n👋 EOF detected. Returning to main menu." << std::endl;
+            return newContact;
+        }
         if (firstName.empty())
             std::cout << "⚠️  First name cannot be empty! Please try again." << std::endl;
     } while (firstName.empty());
@@ -67,7 +70,11 @@ Contact getContactFromUser()
     do
     {
         std::cout << "📝 Enter Last Name: ";
-        std::getline(std::cin, lastName);
+        if (!std::getline(std::cin, lastName))
+        {
+            std::cout << "\n👋 EOF detected. Returning to main menu." << std::endl;
+            return newContact;
+        }
         if (lastName.empty())
             std::cout << "⚠️  Last name cannot be empty! Please try again." << std::endl;
     } while (lastName.empty());
@@ -75,7 +82,11 @@ Contact getContactFromUser()
     do
     {
         std::cout << "📝 Enter Nickname: ";
-        std::getline(std::cin, nickName);
+        if (!std::getline(std::cin, nickName))
+        {
+            std::cout << "\n👋 EOF detected. Returning to main menu." << std::endl;
+            return newContact;
+        }
         if (nickName.empty())
             std::cout << "⚠️  Nickname cannot be empty! Please try again." << std::endl;
     } while (nickName.empty());
@@ -83,8 +94,11 @@ Contact getContactFromUser()
     do
     {
         std::cout << "📝 Enter Phone Number: ";
-        std::getline(std::cin, phoneNumber);
-        
+        if (!std::getline(std::cin, phoneNumber))
+        {
+            std::cout << "\n👋 EOF detected. Returning to main menu." << std::endl;
+            return newContact;
+        }
         if (phoneNumber.empty())
             std::cout << "⚠️  Phone number cannot be empty! Please try again." << std::endl;
         else if (!isOnlyDigits(phoneNumber))
@@ -97,7 +111,11 @@ Contact getContactFromUser()
     do
     {
         std::cout << "📝 Enter Darkest Secret: ";
-        std::getline(std::cin, darkestSecret);
+        if (!std::getline(std::cin, darkestSecret))
+        {
+            std::cout << "\n👋 EOF detected. Returning to main menu." << std::endl;
+            return newContact;
+        }
         if (darkestSecret.empty())
             std::cout << "⚠️  Darkest secret cannot be empty! Please try again." << std::endl;
     } while (darkestSecret.empty());
@@ -168,13 +186,20 @@ int main (int argc, char **argv)
                 do
                 {
                     std::cout << "\n📝 Enter index to view details (0-7): ";
-                    std::getline(std::cin, indexStr); 
+                    if (!std::getline(std::cin, indexStr))
+                    {
+                        std::cout << "\n👋 EOF detected. Returning to main menu." << std::endl;
+                        break;
+                    }
                     
                     if (!isOnlyDigits(indexStr) || indexStr.empty())
                         std::cout << "⚠️  Please enter a valid digit!" << std::endl;
                     else if (indexStr.length() > 1 || indexStr[0] > '7')
                         std::cout << "⚠️  Index must be between 0 and 7!" << std::endl;
                 } while (!isOnlyDigits(indexStr) || indexStr.empty() || indexStr.length() > 1 || indexStr[0] > '7');
+                
+                if (indexStr.empty()) // If EOF was detected, skip displaying contact details
+                    break;
                 
                 std::stringstream ss(indexStr);  // we create a stringstream object to convert the string to an integer
                 int index;
