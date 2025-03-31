@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     heapZombie1->announce();
     heapZombie2->announce();
     
-    // We can store heap zombies in containers
+    // We can store heap zombies in arrays
     Zombie* zombieArray[2] = {heapZombie1, heapZombie2};
     std::cout << "Using zombies from array:" << std::endl;
     zombieArray[0]->announce();
