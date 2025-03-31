@@ -12,6 +12,7 @@ public:
     // Constructors and destructor
     Zombie(); // Default constructor for the horde
     ~Zombie();
+    // Constructor with a name parameter
     Zombie(std::string name);
 
     // Member functions
