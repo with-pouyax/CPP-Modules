@@ -71,7 +71,8 @@ void replaceInFile(const std::string& filename, const std::string& s1, const std
                 // we move the position to the end of the string we just replaced for the next iteration
             }
         }
-        outputFile << line;
+        outputFile << line; // write the line to the output file
+        // if the end of the file is not reached, write a newline to the output file
         if (!inputFile.eof()) {
             outputFile << std::endl;
         }
