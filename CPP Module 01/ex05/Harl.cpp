@@ -45,18 +45,19 @@ void (Harl::*)(void) → This whole thing means:
         &Harl::_warning,
         &Harl::_error
     };
-    
+    // array of strings containing the levels
     std::string levels[4] = {
         "DEBUG",
         "INFO",
         "WARNING",
         "ERROR"
     };
-    
+    // loop through the array of strings and call the appropriate function
     for (int i = 0; i < 4; i++) {
         if (level == levels[i]) {
             (this->*complaints[i])();
             return;
         }
     }
+    std::cout << "Probably complaining about insignificant problems" << std::endl;
 } 
