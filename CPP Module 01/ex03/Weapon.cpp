@@ -2,7 +2,10 @@
 
 //constructor
 Weapon::Weapon(const std::string& type) {
-    this->_type = type;
+    if (type.empty())
+        this->_type = "Unknown type of weapon";
+    else
+        this->_type = type;
 }
 
 //destructor
