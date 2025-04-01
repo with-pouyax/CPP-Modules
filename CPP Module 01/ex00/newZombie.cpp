@@ -13,4 +13,4 @@ Zombie* newZombie(std::string name) {
         std::cerr << "Memory allocation failed: " << error.what() << std::endl; //what() is a member function of the std::bad_alloc class that returns a string describing the error
         return NULL;
     }
-} 
+}
