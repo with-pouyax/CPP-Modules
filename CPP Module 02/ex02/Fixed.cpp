@@ -39,6 +39,9 @@ Fixed::~Fixed(void) {
 Fixed::Fixed(const int value) {
     std::cout << "Int constructor called" << std::endl;
     // Check for overflow
+    // we know that when we convert an int to a fixed point value, we multiply the int by 2^8
+    // so if we have an big int like 2000000000, if we multiply it by 2^8, it will overflow
+    // here INT_MAX >> _fractionalBits means INT_MAX / 2^8 and if it's greater than value, then we have an overflow
     if (value > INT_MAX >> _fractionalBits) {
         std::cerr << "Warning: Integer overflow detected. Value capped at INT_MAX." << std::endl;
         _fixedPointValue = INT_MAX;
