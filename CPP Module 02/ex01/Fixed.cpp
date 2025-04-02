@@ -1,5 +1,6 @@
 #include "Fixed.hpp"
 #include <cmath>
+#include <limits>
 
 const int Fixed::_fractionalBits = 8;
 //---------------------------------------------------------------------------------
@@ -37,8 +38,24 @@ Fixed::Fixed(const int value) {
     // so 00000001 << 8 = 0000000100000000
     // in fixed point, we have 8 bits for the integer part and 8 bits for the fractional part
     // so here 0000000100000000 = 1.0
-    this->_fixedPointValue = value << this->_fractionalBits;
+    
+    // Check for overflow/underflow
+    const int maxValue = (1 << 23) - 1;  // Maximum positive value (2^23 - 1)
+    const int minValue = -(1 << 23);     // Minimum negative value (-2^23)
+    
+    if (value > maxValue) {
+        std::cerr << "Warning: Integer overflow detected. Value will be clamped to maximum." << std::endl;
+        this->_fixedPointValue = maxValue << this->_fractionalBits;
+    }
+    else if (value < minValue) {
+        std::cerr << "Warning: Integer underflow detected. Value will be clamped to minimum." << std::endl;
+        this->_fixedPointValue = minValue << this->_fractionalBits;
+    }
+    else {
+        this->_fixedPointValue = value << this->_fractionalBits;
+    }
 }
+
 //---------------------------------------------------------------------------------
 // Float constructor
 //here we receive a float value and we convert it to a fixed point value
@@ -67,7 +84,21 @@ float Fixed::toFloat(void) const {
 //here we convert the fixed point value to an int
 int Fixed::toInt(void) const {
     //here we shift the fixed point value to the right by the number of fractional bits (8) to convert it to an int
-    return this->_fixedPointValue >> this->_fractionalBits;
+    
+    // First convert to long long to handle potential overflow
+    long long shiftedValue = static_cast<long long>(this->_fixedPointValue) >> this->_fractionalBits;
+    
+    // Check for overflow/underflow
+    if (shiftedValue > std::numeric_limits<int>::max()) {
+        std::cerr << "Warning: Integer overflow in toInt(). Value will be clamped to maximum." << std::endl;
+        return std::numeric_limits<int>::max();
+    }
+    if (shiftedValue < std::numeric_limits<int>::min()) {
+        std::cerr << "Warning: Integer underflow in toInt(). Value will be clamped to minimum." << std::endl;
+        return std::numeric_limits<int>::min();
+    }
+    
+    return static_cast<int>(shiftedValue);
 }
 //---------------------------------------------------------------------------------
 //here we get the raw value of the fixed point value
