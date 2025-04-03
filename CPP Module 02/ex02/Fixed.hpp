@@ -2,6 +2,7 @@
 #define FIXED_HPP
 
 #include <iostream>
+#include <climits>
 
 class Fixed {
 private:

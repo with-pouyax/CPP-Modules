@@ -95,12 +95,12 @@ void testOverflowUnderflow() {
     std::cout << YELLOW << "\nTesting float constructor limits:" << RESET << std::endl;
     Fixed normalFloat(42.42f);
     // Test overflow with large floats
-    Fixed bigFloat1(INT_MAX * 1.5f); // we create a Fixed object called bigFloat1 with a value of INT_MAX * 1.5
+    Fixed bigFloat1(static_cast<float>(INT_MAX) * 1.5f); // we create a Fixed object called bigFloat1 with a value of INT_MAX * 1.5
     Fixed bigFloat2(1e20f); // 1e20f = 1 × 10^20
     Fixed bigFloat3(INFINITY); // INFINITY is a big constant usually used for overflow
     
     // Test underflow with small floats
-    Fixed smallFloat1(INT_MIN * 1.5f);
+    Fixed smallFloat1(static_cast<float>(INT_MIN) * 1.5f);
     Fixed smallFloat2(-1e20f);
     Fixed smallFloat3(-INFINITY);
     

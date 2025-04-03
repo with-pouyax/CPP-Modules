@@ -1,6 +1,6 @@
 #include "Fixed.hpp"
 #include <cmath>
-#include <climits>
+
 
 const int Fixed::_fractionalBits = 8;
 
