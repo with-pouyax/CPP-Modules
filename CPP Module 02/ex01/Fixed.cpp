@@ -2,6 +2,8 @@
 #include <cmath>
 #include <limits>
 
+
+
 const int Fixed::_fractionalBits = 8;
 //---------------------------------------------------------------------------------
 // Default constructor
@@ -40,6 +42,8 @@ Fixed::Fixed(const int value) {
     // so here 0000000100000000 = 1.0
     
     // Check for overflow/underflow
+    // 23 because 32 - 8 = 24 and 24 - 1 = 23
+    // -1 because we have 23 bits for the integer part and 1 bit for the sign
     const int maxValue = (1 << 23) - 1;  // Maximum positive value (2^23 - 1)
     const int minValue = -(1 << 23);     // Minimum negative value (-2^23)
     
@@ -51,7 +55,8 @@ Fixed::Fixed(const int value) {
         std::cerr << "Warning: Integer underflow detected. Value will be clamped to minimum." << std::endl;
         this->_fixedPointValue = minValue << this->_fractionalBits;
     }
-    else {
+    else { // if value is between max and min
+        // we shift 8 bits to the left
         this->_fixedPointValue = value << this->_fractionalBits;
     }
 }
@@ -69,7 +74,30 @@ Fixed::Fixed(const int value) {
 Fixed::Fixed(const float value) {
     std::cout << "Float constructor called" << std::endl;
     
-    this->_fixedPointValue = roundf(value * (1 << this->_fractionalBits));
+    // Calculate the maximum and minimum values that can be represented
+    // 23 bits for integer part (32 - 8 - 1), 1 bit for sign
+    const float maxValue = static_cast<float>((1 << 23) - 1);
+    const float minValue = static_cast<float>(-(1 << 23));
+    
+    // Clamp the input value if it's too large or too small
+    float clampedValue = value;
+    if (value > maxValue) {
+        std::cerr << "Warning: Float overflow detected. Value will be clamped to maximum." << std::endl;
+        clampedValue = maxValue;
+    }
+    else if (value < minValue) {
+        std::cerr << "Warning: Float underflow detected. Value will be clamped to minimum." << std::endl;
+        clampedValue = minValue;
+    }
+    
+    // by 1 << 8 we shift 8 bits to the left so we have 256 in fixed point form
+    // so 256 = 00000000 00000000 00000001 00000000
+    // so by multiplying our value by 256 in fixed point form we convert it to a fixed point value
+    // imagine we have 3.12f * 256 = 800.32 by rounding it we get 800
+    // so 800 = 00000011 00100100
+    //In fixed-point (8 fractional bits), this represents: 800 / 256 = 3.125
+    // it is accurate enough for our purposes
+    this->_fixedPointValue = roundf(clampedValue * (1 << this->_fractionalBits));
 }
 //---------------------------------------------------------------------------------
 //here we convert the fixed point value to a float
@@ -84,21 +112,8 @@ float Fixed::toFloat(void) const {
 //here we convert the fixed point value to an int
 int Fixed::toInt(void) const {
     //here we shift the fixed point value to the right by the number of fractional bits (8) to convert it to an int
-    
-    // First convert to long long to handle potential overflow
-    long long shiftedValue = static_cast<long long>(this->_fixedPointValue) >> this->_fractionalBits;
-    
-    // Check for overflow/underflow
-    if (shiftedValue > std::numeric_limits<int>::max()) {
-        std::cerr << "Warning: Integer overflow in toInt(). Value will be clamped to maximum." << std::endl;
-        return std::numeric_limits<int>::max();
-    }
-    if (shiftedValue < std::numeric_limits<int>::min()) {
-        std::cerr << "Warning: Integer underflow in toInt(). Value will be clamped to minimum." << std::endl;
-        return std::numeric_limits<int>::min();
-    }
-    
-    return static_cast<int>(shiftedValue);
+    // shifting 8 bits to the right is like dividing by 2^8 = 256
+    return this->_fixedPointValue >> this->_fractionalBits;
 }
 //---------------------------------------------------------------------------------
 //here we get the raw value of the fixed point value
