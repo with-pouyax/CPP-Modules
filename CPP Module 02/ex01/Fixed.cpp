@@ -131,6 +131,8 @@ void Fixed::setRawBits(int const raw) {
 //here we overload the << operator to print the fixed point value as a float
 // so we define a special behavior for the << operator when one side is a Fixed object and the other side is an ostream object
 // by ostream we mean the output stream, like cout
+// so from now on when we use << with a Fixed object, we will convert the fixed point value to a float and
+// print it.
 std::ostream& operator<<(std::ostream& COUT, const Fixed& fixed) {
     COUT << fixed.toFloat();
     return COUT;

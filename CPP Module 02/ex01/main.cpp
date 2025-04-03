@@ -25,26 +25,32 @@ int main(void) {
     // Testing integer overflow
     Fixed hugeInt(8388608);  // 2^23 (max value + 1)
     std::cout << "Huge integer (should overflow): " << hugeInt << std::endl;
+    std::cout << std::endl;
     
     // Testing integer underflow
     Fixed smallInt(-8388609);  // -2^23 - 1 (min value - 1)
     std::cout << "Small integer (should underflow): " << smallInt << std::endl;
+    std::cout << std::endl;
     
     // Testing float overflow
     Fixed hugeFloat(8388608.0f);  // 2^23 (max value + 1)
     std::cout << "Huge float (should overflow): " << hugeFloat << std::endl;
-    
+    std::cout << std::endl;
+
     // Testing float underflow
     Fixed smallFloat(-8388609.0f);  // -2^23 - 1 (min value - 1)
     std::cout << "Small float (should underflow): " << smallFloat << std::endl;
-    
+    std::cout << std::endl;
+
     // Testing conversion overflow
     Fixed maxValue(8388607);  // 2^23 - 1 (max value)
     std::cout << "Max value to int: " << maxValue.toInt() << std::endl;
-    
+    std::cout << std::endl;
+
     // Testing conversion underflow
     Fixed minValue(-8388608);  // -2^23 (min value)
     std::cout << "Min value to int: " << minValue.toInt() << std::endl;
-
+    std::cout << std::endl;
+    
     return 0;
 } 
