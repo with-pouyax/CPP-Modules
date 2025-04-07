@@ -26,7 +26,7 @@ class ClapTrap {
         //public member functions
         void attack(const std::string& target);  //attack a target
         void takeDamage(unsigned int amount);    //take damage myself
-        void beRepaired(unsigned int amount);   //repair myself
+        void beRepaired(unsigned int amount);    //repair myself
 
         //getters
         void displayInfo() const;
