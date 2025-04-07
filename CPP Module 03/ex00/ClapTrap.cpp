@@ -92,7 +92,7 @@ void ClapTrap::beRepaired(unsigned int amount)
 {
     if (this->_hitPoints > 0 && this->_energyPoints > 0)
     {
-        if (static_cast<unsigned int>(INT_MAX - this->_hitPoints) < amount)
+        if (static_cast<unsigned int>(INT_MAX - this->_hitPoints) < amount) //if amount is too big, set to max
             this->_hitPoints = INT_MAX;
         else
             this->_hitPoints += amount;
