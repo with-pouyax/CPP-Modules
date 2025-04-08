@@ -43,9 +43,8 @@ int main() {
     {
         ScavTrap scav1("Scavvy");
         scav1.attack("target");
-        scav1.takeDamage(30); 
+        scav1.takeDamage(30);
         scav1.beRepaired(20);
-        scav1.beRepaired(0);
         scav1.guardGate();
 
         //display the info of the object
