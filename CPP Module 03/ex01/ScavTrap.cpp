@@ -60,4 +60,4 @@ void ScavTrap::attack(const std::string& target) {
 // Special ability
 void ScavTrap::guardGate() {
     std::cout << "ScavTrap " << this->_name << " is now in Gate keeper mode!" << std::endl;
-} 
+}
