@@ -14,6 +14,9 @@ class ScavTrap : public ClapTrap {
         // Constructor with name
         ScavTrap(std::string name);
 
+        // Override attack function
+        void attack(const std::string& target);
+
         // Special ability
         void guardGate();
 };

@@ -43,6 +43,20 @@ ScavTrap::ScavTrap(std::string name) : ClapTrap(name) {
     this->_attackDamage = 20;
 }
 
+// Override attack function
+void ScavTrap::attack(const std::string& target) {
+    if (this->_hitPoints > 0 && this->_energyPoints > 0) {
+        std::cout << "ScavTrap " << this->_name << " attacks " << target 
+                  << ", causing " << this->_attackDamage << " points of damage!" << std::endl;
+        this->_energyPoints--;
+    } else {
+        if (this->_hitPoints <= 0)
+            std::cout << "ScavTrap " << this->_name << " is dead and cannot attack!" << std::endl;
+        else if (this->_energyPoints <= 0)
+            std::cout << "ScavTrap " << this->_name << " has no energy to attack!" << std::endl;
+    }
+}
+
 // Special ability
 void ScavTrap::guardGate() {
     std::cout << "ScavTrap " << this->_name << " is now in Gate keeper mode!" << std::endl;
