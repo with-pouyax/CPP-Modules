@@ -153,6 +153,40 @@ int main() {
                 throw;
             }
         }
+
+        // Test 5: Array String Manipulation
+        printTitle("Array String Manipulation Test");
+        {
+            const int arraySize = 11;  // 5 + 1(skip) + 5 elements
+            std::string array[arraySize];
+            
+            // Fill first 5 elements with random strings
+            array[0] = "Apple";
+            array[1] = "Banana";
+            array[2] = "Cherry";
+            array[3] = "Dragon fruit";
+            array[4] = "Elderberry";
+            
+            // Skip one element (index 5)
+            array[5] = "";
+            
+            // Fill next 5 elements with different random strings
+            array[6] = "Red";
+            array[7] = "Blue";
+            array[8] = "Green";
+            array[9] = "Yellow";
+            array[10] = "Purple";
+            
+            // Print the whole array
+            std::cout << GREEN << "Printing array contents:" << RESET << std::endl;
+            for (int i = 0; i < arraySize; i++) {
+                if (array[i].empty()) {
+                    std::cout << "Index " << i << ": <empty>" << std::endl;
+                } else {
+                    std::cout << "Index " << i << ": " << array[i] << std::endl;
+                }
+            }
+        }
     }
 
     // if any of the above tests failed, we catch it here
