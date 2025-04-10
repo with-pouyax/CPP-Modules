@@ -147,9 +147,50 @@ int main() {
                 throw;
             }
         }
-    }
 
-    // if any of the above tests failed, we catch it here
+        // Test 5: Brain Ideas Array Test
+        printTitle("Brain Ideas Array Test");
+        {
+            Dog* dog = NULL;
+            try {
+                dog = new Dog();
+                Brain* brain = dog->getBrain();
+
+                // Fill first 5 ideas
+                brain->setIdea(0, "I want to chase squirrels");
+                brain->setIdea(1, "Must protect the house");
+                brain->setIdea(2, "Time for a walk?");
+                brain->setIdea(3, "Food food food!");
+                brain->setIdea(4, "I love my human");
+
+                // Skip one slot (index 5)
+
+                // Fill next 5 ideas
+                brain->setIdea(6, "Ball is life");
+                brain->setIdea(7, "Need to dig a hole");
+                brain->setIdea(8, "Mailman is suspicious");
+                brain->setIdea(9, "Belly rubs are the best");
+                brain->setIdea(10, "Must catch my tail");
+
+                // Print all ideas including the skipped one
+                std::cout << GREEN << "Printing all ideas:" << RESET << std::endl;
+                for (int i = 0; i <= 100; i++) 
+                {
+                    std::string idea = brain->getIdea(i);
+                    std::cout << "Idea " << i << ": " << idea << std::endl;
+                }
+
+                // Proper cleanup
+                delete dog;  // This will also delete the Brain since Dog's destructor handles it
+                dog = NULL;
+            }
+            catch (const std::bad_alloc& e) {
+                std::cerr << RED << "Memory allocation failed: " << e.what() << RESET << std::endl;
+                delete dog;  // Safe to delete NULL pointer
+                throw;
+            }
+        }
+    }
     catch (const std::exception& e) {
         std::cerr << RED << "Program terminated due to exception: " << e.what() << RESET << std::endl;
         return 1;
