@@ -49,6 +49,7 @@ Dog& Dog::operator=(const Dog& other) {
 Dog::~Dog() {
     std::cout << "Dog destructor called" << std::endl;
     delete brain; // delete NULL is safe in C++
+    brain = NULL; // set the brain pointer to NULL
 }
 
 void Dog::makeSound() const {

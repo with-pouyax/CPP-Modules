@@ -59,6 +59,7 @@ Cat& Cat::operator=(const Cat& other) {
 Cat::~Cat() {
     std::cout << "Cat destructor called" << std::endl;
     delete brain; // delete NULL is safe in C++
+    brain = NULL; // set the brain pointer to NULL
 }
 
 void Cat::makeSound() const {

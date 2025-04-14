@@ -1,6 +1,7 @@
 #include "Cat.hpp"
 #include <iostream>
 
+// default constructor
 Cat::Cat() : Animal() {
     std::cout << "Cat default constructor called" << std::endl;
     this->type = "Cat";
@@ -14,7 +15,8 @@ Cat::Cat() : Animal() {
     }
 }
 
-Cat::Cat(const Cat& other) : Animal(other) {
+// copy constructor
+Cat::Cat(const Cat& other) : Animal(other)/* copy constructor of Animal class*/ {
    // other is a reference to the Cat object that we want to copy
    // *other is wrong because other is already an object, not a pointer so we can't dereference it
    // other.brain is the member inside the Cat object which is a pointer to a Brain object
@@ -26,7 +28,7 @@ Cat::Cat(const Cat& other) : Animal(other) {
     // this->brain mean pointer to the current object's brain
     // we call Brain constructor with brain object of other Cat object
 
-        this->brain = new Brain(*other.brain); 
+        this->brain = new Brain(*other.brain); // copy constructor of Brain class
     }
     catch (const std::bad_alloc& e) {
         std::cerr << "Memory allocation failed for Brain copy: " << e.what() << std::endl;
@@ -38,13 +40,13 @@ Cat& Cat::operator=(const Cat& other) {
     std::cout << "Cat copy assignment operator called" << std::endl;
 
     if (this != &other) { // if the current object is not the same as the other object
-        Animal::operator=(other); //we call the operator= of the Animal class with the other object as input means we copy the other object's Animal part to the current object
+        Animal::operator=(other); //we copy other object's Animal part to the current object
         // why ? because animal is the base class of Cat
         Brain* temp = NULL;
         try {
             temp = new Brain(*other.brain); // we call Brain copy constructor with brain object of other Cat object
-            delete brain; // Only delete old brain if new allocation succeeded
-            brain = temp; // now brain now brain point to the temp Brain object which is a copy of the other object's brain
+            delete brain; // Only delete the current object's brain if new allocation succeeded
+            brain = temp; // now current object's brain point to the temp Brain object which is a copy of the other object's brain
         }
         catch (const std::bad_alloc& e) {
             std::cerr << "Memory allocation failed in assignment: " << e.what() << std::endl;
@@ -59,6 +61,7 @@ Cat& Cat::operator=(const Cat& other) {
 Cat::~Cat() {
     std::cout << "Cat destructor called" << std::endl;
     delete brain; // delete NULL is safe in C++
+    brain = NULL; // set the brain pointer to NULL
 }
 
 void Cat::makeSound() const {
