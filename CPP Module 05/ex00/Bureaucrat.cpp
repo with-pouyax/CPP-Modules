@@ -6,6 +6,8 @@ const char* Bureaucrat::GradeTooHighException::what() const throw() {
 }
 
 const char* Bureaucrat::GradeTooLowException::what() const throw() {
+    //instead of printing we return a string because it is what what() does
+    //it returns a string that is the error message and then later in catch we can print it.
     return "Grade is too low!";
 }
 
