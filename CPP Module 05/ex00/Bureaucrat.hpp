@@ -5,6 +5,7 @@
 #include <iostream>
 #include <exception>
 
+
 class Bureaucrat {
 private:
     const std::string _name; 
@@ -37,7 +38,7 @@ public:
     // we override the what() function to return our desired message
 
     // we call this throw() at the end of the function Exception Specification
-    //it means that we promise the compiler that this function will not throw an exception
+    //it means that we promise the compiler that this function will not throw an exception (it will not fail on something)
     // we need to include it here because the original what(), has this throw()
 
     class GradeTooHighException : public std::exception {
@@ -45,6 +46,7 @@ public:
         virtual const char* what() const throw();
     };
 
+    //Because exception classes are lightweight, short-lived, and not meant to be copied or assigned, so Orthodox Canonical Form is unnecessary.
     class GradeTooLowException : public std::exception {
     public:
         virtual const char* what() const throw();

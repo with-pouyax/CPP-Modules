@@ -23,8 +23,8 @@ Bureaucrat::Bureaucrat(const Bureaucrat& other) : _name(other._name), _grade(oth
 
 // Assignment operator
 Bureaucrat& Bureaucrat::operator=(const Bureaucrat& other) {
-    if (this != &other) {
-        _grade = other._grade;
+    if (this != &other) {  // is this is not the same object
+        _grade = other._grade; // we don't assign the name because it's a const member and only set once in the constructor
     }
     return *this;
 }

@@ -2,6 +2,13 @@
 #include <iostream>
 
 int main() {
+
+    //test default constructor
+
+    /* std::cout << "\nTesting default constructor..." << std::endl;
+    Bureaucrat defaultBureaucrat;
+    std::cout << defaultBureaucrat << std::endl; */
+
     try {
         // Test valid bureaucrat creation
         std::cout << "Creating a valid bureaucrat..." << std::endl;
@@ -22,22 +29,17 @@ int main() {
         std::cout << "\nTrying to create a bureaucrat with grade 0..." << std::endl;
         Bureaucrat high("High", 0);
     }
-    catch (const Bureaucrat::GradeTooHighException& e) {
+    catch (const std::exception& e) {
         std::cout << "Exception caught: " << e.what() << std::endl;
     }
-    catch (const Bureaucrat::GradeTooLowException& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
-    }
+
 
     try {
         // Test grade too low exception
         std::cout << "\nTrying to create a bureaucrat with grade 151..." << std::endl;
         Bureaucrat low("Low", 151);
     }
-    catch (const Bureaucrat::GradeTooHighException& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
-    }
-    catch (const Bureaucrat::GradeTooLowException& e) {
+    catch (const std::exception& e) {
         std::cout << "Exception caught: " << e.what() << std::endl;
     }
 
@@ -48,10 +50,7 @@ int main() {
         std::cout << top << std::endl;
         top.incrementGrade();
     }
-    catch (const Bureaucrat::GradeTooHighException& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
-    }
-    catch (const Bureaucrat::GradeTooLowException& e) {
+    catch (const std::exception& e) {
         std::cout << "Exception caught: " << e.what() << std::endl;
     }
 
@@ -62,10 +61,7 @@ int main() {
         std::cout << bottom << std::endl;
         bottom.decrementGrade();
     }
-    catch (const Bureaucrat::GradeTooHighException& e) {
-        std::cout << "Exception caught: " << e.what() << std::endl;
-    }
-    catch (const Bureaucrat::GradeTooLowException& e) {
+    catch (const std::exception& e) {
         std::cout << "Exception caught: " << e.what() << std::endl;
     }
 
