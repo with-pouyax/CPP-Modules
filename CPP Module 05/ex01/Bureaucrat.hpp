@@ -5,6 +5,23 @@
 #include <iostream>
 #include <exception>
 
+/*
+- In the Bureaucrat class, we have this function: void signForm(Form& form);
+- That means Bureaucrat needs to know that the type `Form` exists.
+- At the same time, in the Form class, there's a function: void beSigned(const Bureaucrat& bureaucrat);
+- So Form also needs to know about the Bureaucrat type.
+- This creates a mutual dependency: Bureaucrat needs Form, and Form needs Bureaucrat.
+- If we use `#include "Form.hpp"` inside "Bureaucrat.hpp" and also `#include "Bureaucrat.hpp"` inside "Form.hpp",
+  we create a circular include problem (infinite loop of includes).
+- The compiler will keep including one header into the other over and over, and it can't finish resolving types.
+- To fix this, we use a **forward declaration**: we write `class Form;` at the top of "Bureaucrat.hpp".
+- This tells the compiler: “Form is a class, trust me — I’ll give you full details later.”
+- Now we can declare pointers or references to Form (like `Form& form`) without needing the full class definition.
+- This breaks the loop and lets both classes refer to each other safely.
+*/
+
+
+
 // Forward declaration of Form to avoid circular dependency
 class Form;
 
