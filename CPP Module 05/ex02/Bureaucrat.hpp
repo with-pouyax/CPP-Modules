@@ -14,24 +14,31 @@ private:
     int _grade; 
 
     // Private default constructor
-    Bureaucrat(); 
+    Bureaucrat();
 
 public:
+
     // Orthodox Canonical Form
     Bureaucrat(const std::string& name, int grade); // constructor with name and grade
-    Bureaucrat(const Bureaucrat& other); // copy constructor
+    Bureaucrat(const Bureaucrat& other);            // copy constructor
     Bureaucrat& operator=(const Bureaucrat& other); // assignment operator
-    ~Bureaucrat(); // destructor
+    ~Bureaucrat();                              // destructor
+
+
 
     // Getters
-    const std::string& getName() const; // get the name of the bureaucrat
-    int getGrade() const; // get the grade of the bureaucrat
+    const std::string& getName() const;         // get the name of the bureaucrat
+    int getGrade() const;                       // get the grade of the bureaucrat
+
+
 
     // Member functions
-    void incrementGrade(); // increment the grade of the bureaucrat
-    void decrementGrade(); // decrement the grade of the bureaucrat
-    void signForm(AForm& form); // sign a form
-    void executeForm(AForm const & form) const;
+    void incrementGrade();                      // increment the grade of the bureaucrat
+    void decrementGrade();                      // decrement the grade of the bureaucrat
+    void signForm(AForm& form);                 // sign a form
+    void executeForm(AForm const & form) const; // execute a form
+
+
 
     // Exception classes
     class GradeTooHighException : public std::exception {
@@ -45,7 +52,10 @@ public:
     };
 };
 
+
 // Overload of the insertion operator
 std::ostream& operator<<(std::ostream& os, const Bureaucrat& bureaucrat);
+
+
 
 #endif // BUREAUCRAT_HPP 
