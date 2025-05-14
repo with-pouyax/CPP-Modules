@@ -5,35 +5,65 @@
 #include <iostream>
 
 // Orthodox Canonical Form implementations
+
+// default constructor
 Intern::Intern() {}
 
+// copy constructor
 Intern::Intern(const Intern& other) {
     (void)other; // Unused parameter
 }
 
+// assignment operator
 Intern& Intern::operator=(const Intern& other) {
-    (void)other; // Unused parameter
+    (void)other; // Unused parameter because we don't need to copy anything
     return *this;
 }
 
+// destructor
 Intern::~Intern() {}
+
+//--------------------------------------------------------------------------
 
 // Exception implementation
 const char* Intern::UnknownFormException::what() const throw() {
     return "Error: Unknown form type requested";
 }
 
+const char* Intern::FormAllocationException::what() const throw() {
+    return "Error: Failed to allocate memory for the form";
+}
+
 // Static helper functions implementation
+//here we create the presidential pardon form with new because we need to return a pointer to the form
 AForm* Intern::createPresidential(const std::string& target) {
-    return new PresidentialPardonForm(target);
+    try {
+        AForm* form = new PresidentialPardonForm(target);
+        return form;
+    }
+    catch (std::bad_alloc&) {
+        throw FormAllocationException();
+    }
 }
 
 AForm* Intern::createRobotomy(const std::string& target) {
-    return new RobotomyRequestForm(target);
+    try {
+        AForm* form = new RobotomyRequestForm(target);
+        return form;
+    }
+    catch (std::bad_alloc&) {
+        throw FormAllocationException();
+    }
 }
 
 AForm* Intern::createShrubbery(const std::string& target) {
-    return new ShrubberyCreationForm(target);
+    try {
+        AForm* form = new ShrubberyCreationForm(target);
+        return form;
+    }
+    catch (std::bad_alloc&) {
+        throw FormAllocationException();
+    }
 }
 
 // Form creation implementation
@@ -55,9 +85,14 @@ AForm* Intern::makeForm(const std::string& formName, const std::string& target) 
     // Find and create the requested form
     for (int i = 0; i < numForms; ++i) {
         if (formName == forms[i].name) {
-            AForm* form = (forms[i].create)(target);
-            std::cout << "Intern creates " << form->getName() << std::endl;
-            return form;
+            try {
+                AForm* form = (forms[i].create)(target);
+                std::cout << "Intern creates " << form->getName() << std::endl;
+                return form;
+            }
+            catch (FormAllocationException& e) {
+                throw; // Re-throw the same exception
+            }
         }
     }
 

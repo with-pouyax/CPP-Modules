@@ -24,9 +24,15 @@ public:
     // we make a form with the name and target that we recieve as parameters
     AForm* makeForm(const std::string& formName, const std::string& target);
 
-    // Exception class for unknown form
+    // Exception classes
     // we throw this exception if the form name is not found
     class UnknownFormException : public std::exception {
+    public:
+        virtual const char* what() const throw();
+    };
+
+    // we throw this exception if memory allocation fails
+    class FormAllocationException : public std::exception {
     public:
         virtual const char* what() const throw();
     };

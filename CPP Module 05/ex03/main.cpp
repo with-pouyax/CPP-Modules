@@ -131,29 +131,37 @@ int main() {
         printHeader("Testing Intern");
         {
             Intern someRandomIntern;
-            AForm* rrf;
+            AForm* rrf = NULL;
             
-            // Test creating RobotomyRequestForm
-            rrf = someRandomIntern.makeForm("robotomy request", "Bender");
-            std::cout << *rrf << std::endl;
-            delete rrf;
-
-            // Test creating PresidentialPardonForm
-            AForm* ppf = someRandomIntern.makeForm("presidential pardon", "Criminal");
-            std::cout << *ppf << std::endl;
-            delete ppf;
-
-            // Test creating ShrubberyCreationForm
-            AForm* scf = someRandomIntern.makeForm("shrubbery creation", "Garden");
-            std::cout << *scf << std::endl;
-            delete scf;
-
-            // Test invalid form name
             try {
-                AForm* invalid = someRandomIntern.makeForm("invalid form", "Target");
-                delete invalid;
-            } catch (std::exception& e) {
-                std::cout << "Exception caught: " << e.what() << std::endl;
+                // Test creating RobotomyRequestForm
+                rrf = someRandomIntern.makeForm("robotomy request", "Bender");
+                std::cout << *rrf << std::endl;
+                delete rrf;
+                rrf = NULL;
+
+                // Test creating PresidentialPardonForm
+                AForm* ppf = someRandomIntern.makeForm("presidential pardon", "Criminal");
+                std::cout << *ppf << std::endl;
+                delete ppf;
+
+                // Test creating ShrubberyCreationForm
+                AForm* scf = someRandomIntern.makeForm("shrubbery creation", "Garden");
+                std::cout << *scf << std::endl;
+                delete scf;
+
+                // Test invalid form name
+                try {
+                    AForm* invalid = someRandomIntern.makeForm("invalid form", "Target");
+                    delete invalid; // This line won't be reached
+                } 
+                catch (Intern::UnknownFormException& e) {
+                    std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
+                }
+            }
+            catch (Intern::FormAllocationException& e) {
+                std::cout << RED << "Memory allocation failed: " << e.what() << RESET << std::endl;
+                delete rrf; // Clean up if allocation failed after rrf
             }
         }
 
@@ -163,25 +171,35 @@ int main() {
             Intern intern;
             Bureaucrat boss("Boss", 1);
             Bureaucrat worker("Worker", 150);
+            AForm* form = NULL;
 
-            AForm* form = intern.makeForm("robotomy request", "Bender");
-            
-            std::cout << "\nTrying to execute without signing:" << std::endl;
             try {
+                form = intern.makeForm("robotomy request", "Bender");
+                
+                std::cout << "\nTrying to execute without signing:" << std::endl;
+                try {
+                    boss.executeForm(*form);
+                } 
+                catch (std::exception& e) {
+                    std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
+                }
+
+                std::cout << "\nSigning and executing the form:" << std::endl;
+                boss.signForm(*form);
                 boss.executeForm(*form);
-            } catch (std::exception& e) {
-                std::cout << "Exception caught: " << e.what() << std::endl;
+            }
+            catch (Intern::FormAllocationException& e) {
+                std::cout << RED << "Memory allocation failed: " << e.what() << RESET << std::endl;
+            }
+            catch (std::exception& e) {
+                std::cout << RED << "Unexpected error: " << e.what() << RESET << std::endl;
             }
 
-            std::cout << "\nSigning and executing the form:" << std::endl;
-            boss.signForm(*form);
-            boss.executeForm(*form);
-
-            delete form;
+            delete form; // Safe to delete even if NULL
         }
 
     } catch (std::exception& e) {
-        std::cout << "Main exception caught: " << e.what() << std::endl;
+        std::cout << RED << "Main exception caught: " << e.what() << RESET << std::endl;
     }
 
     return 0;
