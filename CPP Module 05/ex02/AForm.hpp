@@ -5,11 +5,18 @@
 #include <iostream>
 #include <exception>
 
+//-----------------------------------------------------------------------------
+
+// Forward declaration of Bureaucrat class
 class Bureaucrat;
 
+//-----------------------------------------------------------------------------
+
+// Declaration of AForm class
 class AForm {
 
 private:
+
     const std::string _name;           
     bool _isSigned;                    
     const int _gradeRequiredToSign;    
@@ -39,18 +46,12 @@ public:
 
     
     // Member functions
-    void beSigned(const Bureaucrat& bureaucrat);
+    void beSigned(const Bureaucrat& bureaucrat); //try to sign the form
     
     
     // Pure virtual execute function
     virtual void execute(Bureaucrat const & executor) const = 0;
     
-
-    // Protected function to check execution requirements
-    protected:
-    void checkExecutionRequirements(const Bureaucrat& executor) const;
-
-
     // Exception classes
     class GradeTooHighException : public std::exception {
     public:
@@ -66,6 +67,11 @@ public:
     public:
         virtual const char* what() const throw();
     };
+
+    // Protected function to check execution requirements
+protected:
+
+    void checkExecutionRequirements(const Bureaucrat& executor) const;
 };
 
 // Overload of the insertion operator

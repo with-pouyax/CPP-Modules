@@ -3,6 +3,7 @@
 
 #include "AForm.hpp"
 
+//same as ShrubberyCreationForm and RobotomyRequestForm only SIGN_GRADE and EXEC_GRADE are different
 class PresidentialPardonForm : public AForm {
 public:
     PresidentialPardonForm(const std::string& target);

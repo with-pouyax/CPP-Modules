@@ -3,6 +3,7 @@
 
 #include "AForm.hpp"
 
+//same as ShrubberyCreationForm only SIGN_GRADE and EXEC_GRADE are different
 class RobotomyRequestForm : public AForm {
 public:
     RobotomyRequestForm(const std::string& target);

@@ -11,7 +11,7 @@ const char* Bureaucrat::GradeTooLowException::what() const throw() {
     return "Grade is too low!";
 }
 
-
+//-----------------------------------------------------------------------------
 
 // Orthodox Canonical Form
 
@@ -42,6 +42,7 @@ Bureaucrat& Bureaucrat::operator=(const Bureaucrat& other) {
 // Destructor
 Bureaucrat::~Bureaucrat() {}
 
+//-----------------------------------------------------------------------------
 
 // Getters
 const std::string& Bureaucrat::getName() const {
@@ -54,6 +55,9 @@ int Bureaucrat::getGrade() const {
 
 
 
+//-----------------------------------------------------------------------------
+
+
 // Member functions
 void Bureaucrat::incrementGrade() {                //increment the grade of the bureaucrat
     if (_grade <= 1)
@@ -61,11 +65,13 @@ void Bureaucrat::incrementGrade() {                //increment the grade of the 
     _grade--;
 }
 
+
 void Bureaucrat::decrementGrade() {               //decrement the grade of the bureaucrat
     if (_grade >= 150)
         throw GradeTooLowException();
     _grade++;
 }
+
 
 void Bureaucrat::signForm(AForm& form) { // this will receive a form object and try to sign it
     try {
@@ -77,6 +83,7 @@ void Bureaucrat::signForm(AForm& form) { // this will receive a form object and 
     }
 }
 
+
 void Bureaucrat::executeForm(AForm const & form) const {
     try {
         form.execute(*this);                  //this will execute the form
@@ -86,6 +93,8 @@ void Bureaucrat::executeForm(AForm const & form) const {
     }
 }
 
+
+//-----------------------------------------------------------------------------
 
 
 // Overload of the insertion operator
