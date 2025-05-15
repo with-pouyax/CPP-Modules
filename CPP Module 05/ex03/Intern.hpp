@@ -8,6 +8,7 @@ class Intern {
 private:
 
     // Static helper functions for form creation
+    // They are static member functions of the class Intern, so we don’t need to create any object from Intern class to be able to use them.
     static AForm* createPresidential(const std::string& target);
     static AForm* createRobotomy(const std::string& target);
     static AForm* createShrubbery(const std::string& target);

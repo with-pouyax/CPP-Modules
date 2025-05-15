@@ -130,15 +130,15 @@ int main() {
         // Test Intern class
         printHeader("Testing Intern");
         {
-            Intern someRandomIntern;
-            AForm* rrf = NULL;
+            Intern someRandomIntern; // we create an intern object
+            AForm* rrf = NULL; // we create a pointer to an AForm object and initialize it to NULL
             
             try {
                 // Test creating RobotomyRequestForm
-                rrf = someRandomIntern.makeForm("robotomy request", "Bender");
-                std::cout << *rrf << std::endl;
-                delete rrf;
-                rrf = NULL;
+                rrf = someRandomIntern.makeForm("robotomy request", "Bender"); // we make a form with the name "robotomy request" and the target "Bender"
+                std::cout << *rrf << std::endl; // we print the form
+                delete rrf; // we delete the form
+                rrf = NULL; // we set the pointer to NULL
 
                 // Test creating PresidentialPardonForm
                 AForm* ppf = someRandomIntern.makeForm("presidential pardon", "Criminal");
@@ -168,15 +168,15 @@ int main() {
         // Test complete workflow
         printHeader("Testing Complete Workflow");
         {
-            Intern intern;
-            Bureaucrat boss("Boss", 1);
-            Bureaucrat worker("Worker", 150);
-            AForm* form = NULL;
+            Intern intern; // we create an intern object
+            Bureaucrat boss("Boss", 1); // we create a bureaucrat object with the name "Boss" and the grade 1
+            Bureaucrat worker("Worker", 150); // we create a bureaucrat object with the name "Worker" and the grade 150
+            AForm* form = NULL; // we create a pointer to an AForm object and initialize it to NULL
 
             try {
-                form = intern.makeForm("robotomy request", "Bender");
+                form = intern.makeForm("robotomy request", "Bender"); // we make a form with the name "robotomy request" and the target "Bender"
                 
-                std::cout << "\nTrying to execute without signing:" << std::endl;
+                std::cout << "\nTrying to execute without signing:" << std::endl; // we try to execute the form without signing
                 try {
                     boss.executeForm(*form);
                 } 

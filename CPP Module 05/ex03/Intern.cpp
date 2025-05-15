@@ -66,32 +66,44 @@ AForm* Intern::createShrubbery(const std::string& target) {
     }
 }
 
+
+
 // Form creation implementation
+// it takes a form name and a target and returns a pointer to a new AForm object based on the form name
 AForm* Intern::makeForm(const std::string& formName, const std::string& target) {
     // Structure to hold form types and their creation functions
     struct FormType {
-        const char* name;
-        AForm* (*create)(const std::string&);
+        std::string name;                       // we store the form name
+        
+        // (*create) means we are making a variable called create that is a pointer to a function
+        // AForm* means the function returns a pointer to an AForm object
+        // (const std::string&) means the function takes a const reference to a std::string
+        AForm* (*create)(const std::string&);   // we store the form creation function
     };
 
-    // Array of form types and their creators
+
+    // here we make a variable called forms and by [] we mean it is an array
+    // this array contains FormType objects as its elements
+    // we save our 3 forms names and their creation functions in this array
+    // bellow we are makeing what called - FUNCTION POINTER TABLE -
     static const FormType forms[] = {
-        {"presidential pardon", &Intern::createPresidential},
-        {"robotomy request", &Intern::createRobotomy},
-        {"shrubbery creation", &Intern::createShrubbery}
+        {std::string("presidential pardon"), &Intern::createPresidential}, //first element name is "presidential pardon" and the creation function is &Intern::createPresidential
+        {std::string("robotomy request"), &Intern::createRobotomy}, //second element name is "robotomy request" and the creation function is &Intern::createRobotomy
+        {std::string("shrubbery creation"), &Intern::createShrubbery} //third element name is "shrubbery creation" and the creation function is &Intern::createShrubbery
     };
-    static const int numForms = 3;
+    static const int numForms = 3; //by static This is created once, and reused every time. It lives for the entire life of the program.
 
-    // Find and create the requested form
+    // we loop through the array and check if the form name fromName we received matches the name of one of the forms in the array
     for (int i = 0; i < numForms; ++i) {
         if (formName == forms[i].name) {
             try {
-                AForm* form = (forms[i].create)(target);
-                std::cout << "Intern creates " << form->getName() << std::endl;
-                return form;
+                AForm* form = (forms[i].create)(target); // we call the creation function from our array
+                std::cout << "Intern creates " << form->getName() << std::endl; // we print a message that the intern creates the form
+                return form; // we return the form
             }
+            // we will go to catch if we fail to allocate memory in the creation function
             catch (FormAllocationException& e) {
-                throw; // Re-throw the same exception
+                throw; // it calls rethrow, means I'm catching the exception here, but I'm not handling it. Just pass it on to the next catch outside. 
             }
         }
     }
