@@ -1,4 +1,5 @@
 #include "ScalarConverter.hpp"
+#include <iomanip>
 
 ScalarConverter::ScalarConverter() {}
 ScalarConverter::ScalarConverter(const ScalarConverter& other) { (void)other; }
@@ -101,14 +102,16 @@ void ScalarConverter::convertInt(const std::string& literal) {
     float f = static_cast<float>(i);
     double d = static_cast<double>(i);
 
-    if (i < 0 || i > 127 || !isprint(i))
+    if (i < 0 || i > 127)
+        std::cout << "char: impossible" << std::endl;
+    else if (!isprint(i))
         std::cout << "char: Non displayable" << std::endl;
     else
         std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;
     
     std::cout << "int: " << i << std::endl;
-    std::cout << "float: " << f << ".0f" << std::endl;
-    std::cout << "double: " << d << ".0" << std::endl;
+    std::cout << std::fixed << std::setprecision(1) << "float: " << f << "f" << std::endl;
+    std::cout << std::fixed << std::setprecision(1) << "double: " << d << std::endl;
 }
 
 void ScalarConverter::convertFloat(const std::string& literal) {
@@ -154,15 +157,17 @@ void ScalarConverter::convertFloat(const std::string& literal) {
             std::cout << "int: impossible" << std::endl;
         } else {
             int i = static_cast<int>(f);
-            if (i < 0 || i > 127 || !isprint(i))
+            if (i < 0 || i > 127)
+                std::cout << "char: impossible" << std::endl;
+            else if (!isprint(i))
                 std::cout << "char: Non displayable" << std::endl;
             else
                 std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;
             std::cout << "int: " << i << std::endl;
         }
     }
-    std::cout << "float: " << f << ".0f" << std::endl;
-    std::cout << "double: " << d << ".0" << std::endl;
+    std::cout << std::fixed << std::setprecision(1) << "float: " << f << "f" << std::endl;
+    std::cout << std::fixed << std::setprecision(1) << "double: " << d << std::endl;
 }
 
 void ScalarConverter::convertDouble(const std::string& literal) {
@@ -218,15 +223,17 @@ void ScalarConverter::convertDouble(const std::string& literal) {
             std::cout << "int: impossible" << std::endl;
         } else {
             int i = static_cast<int>(d);
-            if (i < 0 || i > 127 || !isprint(i))
+            if (i < 0 || i > 127)
+                std::cout << "char: impossible" << std::endl;
+            else if (!isprint(i))
                 std::cout << "char: Non displayable" << std::endl;
             else
                 std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;
             std::cout << "int: " << i << std::endl;
         }
     }
-    std::cout << "float: " << f << ".0f" << std::endl;
-    std::cout << "double: " << d << ".0" << std::endl;
+    std::cout << std::fixed << std::setprecision(1) << "float: " << f << "f" << std::endl;
+    std::cout << std::fixed << std::setprecision(1) << "double: " << d << std::endl;
 }
 
 void ScalarConverter::convert(const std::string& literal) {

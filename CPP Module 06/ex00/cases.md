@@ -119,8 +119,8 @@ double: nan
 ./convert 999999999999999999999999999.0f
 char: impossible
 int: impossible
-float: impossible
-double: impossible
+float: 999999988484154753734934528.0f
+double: 1000000000000000013287555072.0
 ```
 
 ## Double Tests
@@ -164,8 +164,8 @@ double: nan
 ./convert 999999999999999999999999999.0
 char: impossible
 int: impossible
-float: impossible
-double: impossible
+float: 999999988484154753734934528.0f
+double: 1000000000000000013287555072.0
 ```
 
 ## Character Tests
