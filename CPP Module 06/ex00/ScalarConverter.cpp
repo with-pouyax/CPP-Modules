@@ -6,7 +6,11 @@ ScalarConverter& ScalarConverter::operator=(const ScalarConverter& other) { (voi
 ScalarConverter::~ScalarConverter() {}
 
 bool ScalarConverter::isChar(const std::string& literal) {
-    return literal.length() == 3 && literal[0] == '\'' && literal[2] == '\'';
+    if (literal.length() == 3 && literal[0] == '\'' && literal[2] == '\'')
+        return true;
+    if (literal.length() == 1 && isprint(literal[0]))
+        return true;
+    return false;
 }
 
 bool ScalarConverter::isInt(const std::string& literal) {
@@ -54,7 +58,12 @@ bool ScalarConverter::isDouble(const std::string& literal) {
 }
 
 void ScalarConverter::convertChar(const std::string& literal) {
-    char c = literal[1];
+    char c;
+    if (literal.length() == 3)
+        c = literal[1];
+    else
+        c = literal[0];
+    
     int i = static_cast<int>(c);
     float f = static_cast<float>(c);
     double d = static_cast<double>(c);
