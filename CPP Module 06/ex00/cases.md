@@ -1,3 +1,9 @@
+#by cases out of ascii range print impossible, by cases out of printable range print Non displayable
+# by 10, 1.0 and 10.000000000000 always float should be 10.0f and double 10.0
+# "+" and "-" should work
+# ".f" shouldnt work
+#sdfsdfsdfsdf
+
 # ScalarConverter Test Cases
 
 ## Basic Number Tests
@@ -213,7 +219,7 @@ float: 45.0f
 double: 45.0
 ```
 
-## Weird but Legal Formats
+## Weird but Legal Formats                             --------- important ----------
 ```bash
 ./convert 42.
 char: '*'
