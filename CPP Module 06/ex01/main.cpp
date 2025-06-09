@@ -36,6 +36,18 @@ int main() {
     std::cout << "Value: " << ptr->value << std::endl;
     std::cout << std::endl;
 
+    //modify the ptr to see if data is modifiable or not
+    ptr->number = 100;
+    ptr->text = "Hello from 42";
+    ptr->value = 1.1;
+
+    //print the modified data
+    std::cout << "Modified Data:" << std::endl;
+    std::cout << "Number: " << ptr->number << std::endl;
+    std::cout << "Text: " << ptr->text << std::endl;
+    std::cout << "Value: " << ptr->value << std::endl;
+    std::cout << std::endl;
+
     // Test 2: Null pointer case
     std::cout << "Test 2: Null pointer case" << std::endl;
     std::cout << "----------------------" << std::endl;
