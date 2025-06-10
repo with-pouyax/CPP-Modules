@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <new>
+#include <typeinfo>
 
 Base* generate(void) {
     
@@ -64,19 +65,19 @@ void identify(Base& p) { // here we recieve a reference to a Base object
         (void)dynamic_cast<A&>(p); // since a reference can't be NULL, in case of failure, dynamic_cast will throw a bad_cast exception
         std::cout << "A" << std::endl;
         return;
-    } catch (const std::bad_cast&) {} // if the cast fails, we catch the exception and do nothing
+    } catch (const std::bad_cast& e) {} // if the cast fails, we catch the exception and do nothing
     
     try {
         (void)dynamic_cast<B&>(p);
         std::cout << "B" << std::endl;
         return;
-    } catch (const std::bad_cast&) {}
+    } catch (const std::bad_cast& e) {}
     
     try {
         (void)dynamic_cast<C&>(p);
         std::cout << "C" << std::endl;
         return;
-    } catch (const std::bad_cast&) {
+    } catch (const std::bad_cast& e) {
         std::cerr << "Error: Unknown type" << std::endl;
     }
 } 
