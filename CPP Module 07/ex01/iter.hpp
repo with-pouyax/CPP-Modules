@@ -22,3 +22,11 @@ void iter(const T* array, size_t length, F func) {
 }
 
 #endif // ITER_HPP 
+
+//*************************************  Important   **************************************/
+//*
+//* - I am thinking i could only have const version of template and then use it for both const and non-const arrays
+//* - because the const version also works for non-const arrays
+//* - but the problem will be if i have a function that modifies the array, it will not work
+//*
+//*****************************************************************************************/
