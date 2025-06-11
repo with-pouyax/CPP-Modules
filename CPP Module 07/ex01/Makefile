@@ -1,4 +1,4 @@
-NAME = whatever
+NAME = Iter
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
 DEPFLAGS = -MMD -MP
