@@ -27,29 +27,36 @@ void testIntArray() {
     
     //------------------------------------------------------
 
-
     printSubtitle("Size Constructor Test");
     Array<int> numbers(5);
     std::cout << "Array size: " << numbers.size() << std::endl;
     try {
-        std::cout << "Attempting to access index 0 (should succeed):" << std::endl;
-        std::cout << "numbers[0] = " << numbers[0] << std::endl;
+        std::cout << "Attempting to print all elements of numbers array:" << std::endl;
+        for (unsigned int i = 0; i < numbers.size(); i++) {
+            std::cout << "numbers[" << i << "] = " << numbers[i] << std::endl;
+        }
     } catch (const std::exception& e) {
         std::cerr << "\033[1;31mError: " << e.what() << "\033[0m" << std::endl;
     }
-    
+
+   //-------------------------------------------------------
+
     printSubtitle("Element Assignment Test");
     for (unsigned int i = 0; i < 5; i++) {
-        numbers[i] = i * 10;
+        numbers[i] = i * 10; // Assign values 0, 10, 20, 30, 40
         std::cout << "numbers[" << i << "] = " << numbers[i] << std::endl;
     }
     
+    //-------------------------------------------------------
+
     printSubtitle("Copy Constructor Test");
     Array<int> copy(numbers);
     for (unsigned int i = 0; i < copy.size(); i++) {
         std::cout << "copy[" << i << "] = " << copy[i] << std::endl;
     }
     
+    //-------------------------------------------------------
+
     printSubtitle("Assignment Operator Test");
     Array<int> assigned;
     assigned = numbers;
@@ -57,6 +64,8 @@ void testIntArray() {
         std::cout << "assigned[" << i << "] = " << assigned[i] << std::endl;
     }
     
+    //-------------------------------------------------------
+
     printSubtitle("Out of Bounds Test");
     try {
         std::cout << "Attempting to access index 5 (should fail):" << std::endl;
@@ -64,7 +73,7 @@ void testIntArray() {
     } catch (const std::exception& e) {
         std::cerr << "\033[1;31mError: " << e.what() << "\033[0m" << std::endl;
     }
-    
+    //-------------------------------------------------------
     try {
         std::cout << "Attempting to access index -1 (should fail):" << std::endl;
         numbers[-1] = 50;
@@ -76,6 +85,17 @@ void testIntArray() {
 void testStringArray() {
     printTitle("TESTING STRING ARRAY");
     
+    printSubtitle("Size Constructor Test");
+    Array<std::string> emptyStrings(3);
+    std::cout << "String array size: " << emptyStrings.size() << std::endl;
+    try {
+        std::cout << "Attempting to print empty 1st element:" << std::endl;
+        std::cout << "emptyStrings[0] = \"" << emptyStrings[0] << "\"" << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "\033[1;31mError: " << e.what() << "\033[0m" << std::endl;
+    }
+    //-------------------------------------------------------
+
     printSubtitle("String Array Creation and Assignment");
     Array<std::string> strings(3);
     strings[0] = "Hello";
@@ -87,6 +107,8 @@ void testStringArray() {
         std::cout << "strings[" << i << "] = " << strings[i] << std::endl;
     }
     
+    //-------------------------------------------------------
+
     printSubtitle("String Array Copy Test");
     Array<std::string> stringCopy(strings);
     for (unsigned int i = 0; i < stringCopy.size(); i++) {
@@ -96,6 +118,18 @@ void testStringArray() {
 
 void testFloatArray() {
     printTitle("TESTING FLOAT ARRAY");
+    
+    printSubtitle("Size Constructor Test");
+    Array<float> emptyFloats(4);
+    std::cout << "Float array size: " << emptyFloats.size() << std::endl;
+    try {
+        std::cout << "Attempting to print empty 1st element:" << std::endl;
+        std::cout << "emptyFloats[0] = " << emptyFloats[0] << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "\033[1;31mError: " << e.what() << "\033[0m" << std::endl;
+    }
+
+    //-------------------------------------------------------
     
     printSubtitle("Float Array Creation and Assignment");
     Array<float> floats(4);
@@ -110,13 +144,50 @@ void testFloatArray() {
     }
 }
 
+void testConstArray() {
+    printTitle("TESTING CONST ARRAY");
+    
+    printSubtitle("Const Array Creation");
+    
+    const Array<int> constArray(4);
+    std::cout << "Const array size: " << constArray.size() << std::endl;
+    
+    try {
+        std::cout << "Attempting to print all elements of constArray:" << std::endl;
+        for (unsigned int i = 0; i < constArray.size(); i++) {
+            std::cout << "constArray[" << i << "] = " << constArray[i] << std::endl;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "\033[1;31mError: " << e.what() << "\033[0m" << std::endl;
+    }
+    
+    //-------------------------------------------------------
+    
+    printSubtitle("Const Array Modification Test");
+    try {
+        std::cout << "Attempting to modify const array (should fail):" << std::endl;
+        //constArray[0] = 42;  // This should fail to compile
+        std::cout << "constArray[0] = " << constArray[0] << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "\033[1;31mError: " << e.what() << "\033[0m" << std::endl;
+    }
+    
+    //-------------------------------------------------------
+    
+    printSubtitle("Const Array Copy Test");
+    Array<int> nonConstArray(constArray);
+    for (unsigned int i = 0; i < nonConstArray.size(); i++) {
+        std::cout << "nonConstArray[" << i << "] = " << nonConstArray[i] << std::endl;
+    }
+}
+
 void testMemoryManagement() {
     printTitle("TESTING MEMORY MANAGEMENT");
     
     printSubtitle("Large Array Allocation Test");
     try {
         std::cout << "Attempting to create a large array (1,000,000 elements)..." << std::endl;
-        Array<int> large(1000000);
+        Array<int> large(1000000000);
         std::cout << "\033[1;32mSuccess: Large array created successfully\033[0m" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "\033[1;31mError creating large array: " << e.what() << "\033[0m" << std::endl;
@@ -137,6 +208,7 @@ int main() {
         testIntArray();
         testStringArray();
         testFloatArray();
+        testConstArray();
         testMemoryManagement();
         
         printTitle("TEST RESULTS");
