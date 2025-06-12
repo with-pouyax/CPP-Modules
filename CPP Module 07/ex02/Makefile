@@ -1,6 +1,6 @@
 NAME = array
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -g -I.
 DEPFLAGS = -MMD -MP
 
 
