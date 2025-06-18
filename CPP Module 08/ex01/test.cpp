@@ -105,16 +105,13 @@ void testOneElement() {
     printSeparator();
 }
 
-void testSameElements() {
-    printHeader("Test 7: Two Same Elements Span");
+void testDefaultConstructor() {
+    printHeader("Test 7: Default Constructor");
     try {
-        Span sp = Span(2);
-        sp.addNumber(1);
-        sp.addNumber(1);
+        Span sp = Span();
         std::cout << "Shortest span: " << sp.shortestSpan() << std::endl;
-        std::cout << "Longest span: " << sp.longestSpan() << std::endl;
     } catch (const std::exception& e) {
-        std::cout << "Error: " << e.what() << std::endl;
+        std::cout << "Expected error: " << e.what() << std::endl;
     }
     printSeparator();
 }
@@ -212,7 +209,7 @@ void testInvalidPointers() {
         v.push_back(2);
         
         // Test with null-like iterators
-        std::vector<int>::iterator null_it = std::vector<int>::iterator();
+        std::vector<int>::iterator null_it = std::vector<int>::iterator(); // it is like a NULL
         sp.addRange(null_it, v.end()); // This should throw InvalidRangeException
     } catch (const std::exception& e) {
         std::cout << "Expected error: " << e.what() << std::endl;
@@ -275,68 +272,3 @@ void testSizeZero() {
     printSeparator();
 }
 
-void testSizeOne() {
-    printHeader("Test 16: Size One");
-    try {
-        Span sp = Span(1);
-        sp.addNumber(1);
-        std::cout << "Shortest span: ";
-        std::cout << sp.shortestSpan() << std::endl;
-    } catch (const std::exception& e) {
-        std::cout << "Expected error: " << e.what() << std::endl;
-    }
-    printSeparator();
-}
-
-void testIteratorEdgeCases() {
-    printHeader("Test 12: Iterator Edge Cases");
-    
-    // Test empty range
-    try {
-        Span sp = Span(5);
-        std::vector<int> v;
-        v.push_back(1);
-        v.push_back(2);
-        sp.addRange(v.begin(), v.begin()); // Empty range
-    } catch (const std::exception& e) {
-        std::cout << "Empty range test: " << e.what() << std::endl;
-    }
-
-    // Test null-like iterators
-    try {
-        Span sp = Span(5);
-        std::vector<int> v;
-        v.push_back(1);
-        v.push_back(2);
-        std::vector<int>::iterator null_it = std::vector<int>::iterator();
-        sp.addRange(null_it, v.end());
-    } catch (const std::exception& e) {
-        std::cout << "Null iterator test: " << e.what() << std::endl;
-    }
-
-    // Test invalid range (end before begin)
-    try {
-        Span sp = Span(5);
-        std::vector<int> v;
-        v.push_back(1);
-        v.push_back(2);
-        sp.addRange(v.end(), v.begin()); // Invalid range
-    } catch (const std::exception& e) {
-        std::cout << "Invalid range test: " << e.what() << std::endl;
-    }
-
-    // Test range that would exceed capacity
-    try {
-        Span sp = Span(3);
-        std::vector<int> v;
-        v.push_back(1);
-        v.push_back(2);
-        v.push_back(3);
-        v.push_back(4);
-        sp.addRange(v.begin(), v.end()); // Would exceed capacity
-    } catch (const std::exception& e) {
-        std::cout << "Capacity exceed test: " << e.what() << std::endl;
-    }
-
-    printSeparator();
-} 

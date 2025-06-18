@@ -46,6 +46,11 @@ public:
     public:
         virtual const char* what() const throw();
     };
+
+    class DefaultConstructionException : public std::exception { // Exception for default construction
+    public:
+        virtual const char* what() const throw();
+    };
 };
 
 // Template implementation must be in header

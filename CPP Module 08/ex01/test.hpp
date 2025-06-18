@@ -8,15 +8,15 @@ void testFullSpan();
 void testLargeSpan();
 void testRangeIterator();
 void testOneElement();
-void testSameElements();
+void testDefaultConstructor();
 void testNegativeNumbers();
 void testRangeBiggerThanSize();
 void testDifferentContainers();
 void testInvalidIterators();
+void testInvalidPointers();
 void testIteratorEdgeCases();
 void testDuplicateNumbers();
 void testVeryLargeNumbers();
 void testSizeZero();
-void testSizeOne();
 
 #endif // TEST_HPP 

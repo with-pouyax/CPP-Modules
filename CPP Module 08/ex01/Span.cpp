@@ -1,7 +1,9 @@
 #include "Span.hpp"
 
 // Orthodox Canonical Form
-Span::Span() : _maxSize(0) {}
+Span::Span() {
+    throw DefaultConstructionException();
+}
 
 Span::Span(unsigned int N) : _maxSize(N) {
     if (N == 0)
@@ -68,4 +70,8 @@ const char* Span::InvalidRangeException::what() const throw() {
 
 const char* Span::InvalidSizeException::what() const throw() {
     return "Invalid span size: size must be greater than 0";
+}
+
+const char* Span::DefaultConstructionException::what() const throw() {
+    return "Default construction of Span is not allowed";
 } 
