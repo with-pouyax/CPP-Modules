@@ -5,14 +5,22 @@
 #include <deque>                          // for std::deque
 
 template<typename T>
-class MutantStack : public std::stack<T>
+class MutantStack : public std::stack<T>  // so we defined a class called MutantStack
+                                          // : public std::stack<T> means, our class inherits all public and protected of stack class
 {
 public:
-    // Typedefs for iterators
+    // This is made of 3 parts:
+    // 1- typedef 2- typename std::stack<T>::container_type::iterator 3- iterator
+        // 1- typedef is a keyword that defines a new name (alias) for an existing type.
+        // 2- the existing type (e.g., int, std::vector<T>::iterator, etc.),
+        // 3- and the new name (alias) you want to use instead.
+    // "Here we make an alias (typedef),
+    // called iterator,
+    // which refers to an iterator type (::iterator),
+    // of the internal container (container_type),
+    // which is used inside std::stack<T>."
+    // the keyword typename is used to tell the compiler that the following identifier is a type.
     typedef typename std::stack<T>::container_type::iterator iterator;
-    typedef typename std::stack<T>::container_type::const_iterator const_iterator;
-    typedef typename std::stack<T>::container_type::reverse_iterator reverse_iterator;
-    typedef typename std::stack<T>::container_type::const_reverse_iterator const_reverse_iterator;
 
     // Constructor and destructor (using default)
     MutantStack() : std::stack<T>() {}
@@ -30,15 +38,6 @@ public:
     // Iterator methods
     iterator begin() { return this->c.begin(); }
     iterator end() { return this->c.end(); }
-    
-    const_iterator begin() const { return this->c.begin(); }
-    const_iterator end() const { return this->c.end(); }
-    
-    reverse_iterator rbegin() { return this->c.rbegin(); }
-    reverse_iterator rend() { return this->c.rend(); }
-    
-    const_reverse_iterator rbegin() const { return this->c.rbegin(); }
-    const_reverse_iterator rend() const { return this->c.rend(); }
 };
 
 #endif // MUTANTSTACK_HPP 
