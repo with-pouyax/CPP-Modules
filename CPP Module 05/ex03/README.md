@@ -1,7 +1,54 @@
-# CPP Module 05 - Exercise 03: At least this beats coffee-making
+# Advanced Form Management System with Interns
 
-## Overview
-This exercise adds an `Intern` class to the previous implementation, which can create different types of forms based on their names. The implementation follows object-oriented principles and includes proper error handling.
+This program creates a complete bureaucratic ecosystem with specialized forms, form execution capabilities, and interns who can create forms on demand. It's like having a smart office assistant who can generate different types of forms based on your needs.
+
+## What it does:
+
+### Intern Form Creation
+- **Smart Intern**: An intern who can create different types of forms just by asking
+- **Form Types Available**:
+  - **Shrubbery Creation Form**: Creates decorative trees in files
+  - **Robotomy Request Form**: Simulates robot surgery (50% success rate)
+  - **Presidential Pardon Form**: Grants pardons from Zaphod Beeblebrox
+- **Dynamic Creation**: Just tell the intern what form you need and who it's for
+
+### Specialized Forms with Actions
+Each form type has specific requirements and performs unique actions:
+
+#### Shrubbery Creation Form
+- **Requirements**: Grade 145 to sign, Grade 137 to execute
+- **Action**: Creates a file with ASCII art trees
+- **Target**: Specifies where to plant the shrubbery
+
+#### Robotomy Request Form
+- **Requirements**: Grade 72 to sign, Grade 45 to execute
+- **Action**: Makes drilling noises and has a 50% chance of success
+- **Target**: The person to be robotomized
+
+#### Presidential Pardon Form
+- **Requirements**: Grade 25 to sign, Grade 5 to execute
+- **Action**: Announces a presidential pardon
+- **Target**: The person being pardoned
+
+### Complete Workflow
+1. **Form Creation**: Intern creates the right form for your needs
+2. **Form Signing**: Bureaucrat with sufficient authority signs the form
+3. **Form Execution**: Bureaucrat with sufficient authority executes the form's action
+4. **Error Handling**: Clear messages for any failures or insufficient authority
+
+### Safety and Validation
+- **Authority Checks**: Ensures only qualified bureaucrats can sign and execute
+- **Form Validation**: Prevents execution of unsigned forms
+- **Error Messages**: Clear feedback when operations fail
+- **Memory Management**: Proper cleanup of created forms
+
+### Example Workflow:
+1. Ask intern to create a "robotomy request" form for "Bender"
+2. High-level bureaucrat signs the form
+3. High-level bureaucrat executes the form (drilling noises, success/failure message)
+4. Form is properly cleaned up
+
+This system provides a complete bureaucratic workflow where interns handle the tedious form creation, and bureaucrats handle the authority-based signing and execution of specialized forms.
 
 ## Class Structure
 

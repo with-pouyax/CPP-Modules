@@ -1,7 +1,45 @@
-# CPP Module 05 - Exercise 01: Form up, maggots!
+# Form Management System
 
-## Overview
-This exercise extends the previous implementation by adding a `Form` class that bureaucrats can sign. The implementation follows the Orthodox Canonical Form and includes proper exception handling.
+This program extends the bureaucratic system by adding forms that bureaucrats can sign and manage. It creates a complete workflow where bureaucrats interact with various types of forms based on their authority levels.
+
+## What it does:
+
+### Form Creation
+- Create forms with a name and specific grade requirements
+- Each form has two grade requirements:
+  - **Sign Grade**: Minimum authority level needed to sign the form
+  - **Execute Grade**: Minimum authority level needed to execute the form
+- Forms start as unsigned when created
+
+### Form Signing Process
+- **Authority Check**: Only bureaucrats with sufficient authority can sign forms
+- **Grade Comparison**: A bureaucrat's grade must be equal to or better than the form's sign grade
+- **Success/Failure Messages**: Clear feedback on whether signing succeeded or failed
+- **Status Tracking**: Forms remember whether they've been signed
+
+### Bureaucrat-Form Interaction
+- **Signing Attempts**: Bureaucrats can try to sign forms
+- **Authority Validation**: The system checks if the bureaucrat has enough authority
+- **Error Handling**: Shows specific reasons why signing failed (grade too low, etc.)
+
+### Safety Features
+- **Grade Validation**: Prevents creating forms with invalid grade requirements
+- **Exception Handling**: Gracefully handles errors and shows meaningful messages
+- **Form Status**: Tracks whether forms are signed or unsigned
+
+### Display Information
+- Shows form details: name, sign status, and grade requirements
+- Displays bureaucrat information with their current grade
+- Provides clear success/failure messages for all operations
+
+## Example Usage:
+- Create a "Tax Form" requiring grade 30 to sign and grade 25 to execute
+- Create bureaucrats "Bob" (grade 50) and "Alice" (grade 20)
+- Bob tries to sign the form (fails - grade too low)
+- Alice signs the form successfully (grade 20 is better than required 30)
+- View the form's updated status after signing
+
+This system ensures that only authorized bureaucrats can sign forms and provides a complete audit trail of all signing attempts.
 
 ## Class Structure
 
