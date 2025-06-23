@@ -27,8 +27,8 @@ class Form;
 
 class Bureaucrat {
 private:
-    const std::string _name; 
-    int _grade; 
+    const std::string _name;                    //old 
+    int _grade;                                 //old
 
     // Private default constructor
     Bureaucrat(); 
@@ -41,13 +41,13 @@ public:
     ~Bureaucrat(); // destructor
 
     // Getters
-    const std::string& getName() const; // get the name of the bureaucrat
-    int getGrade() const; // get the grade of the bureaucrat
+    const std::string& getName() const; // get the name of the bureaucrat     //old
+    int getGrade() const; // get the grade of the bureaucrat                 //old
 
     // Member functions
-    void incrementGrade(); // increment the grade of the bureaucrat
-    void decrementGrade(); // decrement the grade of the bureaucrat
-    void signForm(Form& form); // sign a form
+    void incrementGrade(); // increment the grade of the bureaucrat     //old
+    void decrementGrade(); // decrement the grade of the bureaucrat     //old
+    void signForm(Form& form); // sign a form                            //new
 
     // Exception classes
     class GradeTooHighException : public std::exception {

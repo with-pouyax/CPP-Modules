@@ -7,7 +7,11 @@ const char* Form::GradeTooHighException::what() const throw() {
 }
 
 const char* Form::GradeTooLowException::what() const throw() {
-    return "Form grade is too low!";
+    return "Bureaucrat grade is too low!";
+}
+
+const char* Form::FormAlreadySignedException::what() const throw() {
+    return "Form is already signed!";
 }
 
 // Constructor
@@ -58,14 +62,24 @@ int Form::getGradeRequiredToExecute() const {
 }
 
 // Member functions
+
+
+
+//===============================================
 // here we receive a bureaucrat object and try to sign the form
 void Form::beSigned(const Bureaucrat& bureaucrat) {
+    if (_isSigned) { // if the form is already signed
+        throw FormAlreadySignedException(); // then we throw an exception
+    }
     if (bureaucrat.getGrade() <= _gradeRequiredToSign) { // if the bureaucrat grade is less than or equal to the grade required to sign the form
         _isSigned = true; // then we sign the form
     } else { // if the bureaucrat grade is greater than the grade required to sign the form
         throw GradeTooLowException(); // then we throw an exception
     }
 }
+//===============================================
+
+
 
 // Overload of the insertion operator
 // this will return a refrence to the output stream (cout)

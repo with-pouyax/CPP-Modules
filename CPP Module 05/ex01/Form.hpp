@@ -31,8 +31,16 @@ public:
     int getGradeRequiredToSign() const;    // get the grade required to sign the form
     int getGradeRequiredToExecute() const; // get the grade required to execute the form
 
+
+
+
+//===============================================
     // Member functions
     void beSigned(const Bureaucrat& bureaucrat);  // this will receive a bureaucrat object and try to sign the form
+//===============================================
+
+
+
 
     // Exception classes
     class GradeTooHighException : public std::exception { // this is a custom exception class that will be used to handle the grade too high exception
@@ -41,6 +49,11 @@ public:
     };
 
     class GradeTooLowException : public std::exception { // this is a custom exception class that will be used to handle the grade too low exception
+    public:
+        virtual const char* what() const throw();
+    };
+
+    class FormAlreadySignedException : public std::exception { // this is a custom exception class that will be used to handle the form already signed exception
     public:
         virtual const char* what() const throw();
     };
