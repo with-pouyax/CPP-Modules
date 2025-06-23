@@ -83,7 +83,7 @@ void Bureaucrat::signForm(AForm& form) { // this will receive a form object and 
     }
 }
 
-
+//===============================================
 void Bureaucrat::executeForm(AForm const & form) const {
     try {
         form.execute(*this);                  //this will execute the form
@@ -92,7 +92,7 @@ void Bureaucrat::executeForm(AForm const & form) const {
         std::cout << _name << " couldn't execute " << form.getName() << " because " << e.what() << std::endl;
     }
 }
-
+//===============================================
 
 //-----------------------------------------------------------------------------
 

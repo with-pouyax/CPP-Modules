@@ -10,7 +10,11 @@ const char* AForm::GradeTooHighException::what() const throw() {
 }
 
 const char* AForm::GradeTooLowException::what() const throw() {
-    return "Form grade is too low!";
+    return "Bureaucrat grade is too low to sign the form!";
+}
+
+const char* AForm::GradeTooLowToExecuteException::what() const throw() {
+    return "Bureaucrat grade is too low to execute the form!";
 }
 
 const char* AForm::FormNotSignedException::what() const throw() {
@@ -103,7 +107,7 @@ void AForm::checkExecutionRequirements(const Bureaucrat& executor) const {
     if (!_isSigned) // if the form is not signed
         throw FormNotSignedException(); // we throw an exception
     if (executor.getGrade() > _gradeRequiredToExecute) // if the executor's grade is greater than the grade required
-        throw GradeTooLowException(); // we throw an exception
+        throw GradeTooLowToExecuteException(); // we throw an exception
 }
 
 // Overload of the insertion operator

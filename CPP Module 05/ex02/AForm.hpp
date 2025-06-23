@@ -21,7 +21,7 @@ private:
     bool _isSigned;                    
     const int _gradeRequiredToSign;    
     const int _gradeRequiredToExecute; 
-    const std::string _target;         // Added target member
+    const std::string _target;         // Added target member  //new
 
     
     // Private default constructor
@@ -49,8 +49,8 @@ public:
     void beSigned(const Bureaucrat& bureaucrat); //try to sign the form
     
     
-    // Pure virtual execute function
-    virtual void execute(Bureaucrat const & executor) const = 0;
+    // Pure virtual execute function means that AForm is an abstract class and we can't create an object of type AForm
+    virtual void execute(Bureaucrat const & executor) const = 0;                 //new
     
     // Exception classes
     class GradeTooHighException : public std::exception {
@@ -63,15 +63,20 @@ public:
         virtual const char* what() const throw();
     };
 
+    class GradeTooLowToExecuteException : public std::exception {
+    public:
+        virtual const char* what() const throw();
+    };
+
     class FormNotSignedException : public std::exception {
     public:
         virtual const char* what() const throw();
     };
 
-    // Protected function to check execution requirements
+    // Protected function to check execution requirements, it is protected because it is used in the child classes but still why ? ******
 protected:
 
-    void checkExecutionRequirements(const Bureaucrat& executor) const;
+    void checkExecutionRequirements(const Bureaucrat& executor) const; //new
 };
 
 // Overload of the insertion operator
