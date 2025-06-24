@@ -93,7 +93,7 @@ void testRobotomyRequestForm() {
             highGrade.executeForm(form);
         }
         
-        printSubHeader("Testing Medium Grade Execution");
+        printSubHeader("4- Testing Medium Grade Execution");
         std::cout << MAGENTA << "Attempting to execute with " << mediumGrade << RESET << std::endl;
         mediumGrade.executeForm(form);
     }
@@ -113,13 +113,13 @@ void testPresidentialPardonForm() {
         printSubHeader("Form Information");
         std::cout << YELLOW << form << RESET << std::endl;
         
-        printSubHeader("Testing Secretary Actions");
+        printSubHeader("1- Testing Secretary Actions");
         std::cout << MAGENTA << "Attempting to sign with " << secretary << RESET << std::endl;
         secretary.signForm(form);
         std::cout << MAGENTA << "\nAttempting to execute with secretary:" << RESET << std::endl;
         secretary.executeForm(form);
         
-        printSubHeader("Testing Presidential Actions");
+        printSubHeader("2- Testing Presidential Actions");
         std::cout << MAGENTA << "Attempting actions with " << president << RESET << std::endl;
         president.signForm(form);
         president.executeForm(form);
@@ -140,15 +140,15 @@ void testAlreadySignedForm() {
         printSubHeader("Form Information");
         std::cout << YELLOW << form << RESET << std::endl;
         
-        printSubHeader("First Signing Attempt");
+        printSubHeader("1- First Signing Attempt");
         std::cout << MAGENTA << "Attempting to sign with " << bureaucrat1 << RESET << std::endl;
         bureaucrat1.signForm(form);
         
-        printSubHeader("Second Signing Attempt (Should Fail)");
+        printSubHeader("2- Second Signing Attempt (Should Fail)");
         std::cout << MAGENTA << "Attempting to sign again with " << bureaucrat2 << RESET << std::endl;
         bureaucrat2.signForm(form);
         
-        printSubHeader("Form Status After Attempts");
+        printSubHeader("3- Form Status After Attempts");
         std::cout << YELLOW << form << RESET << std::endl;
     }
     catch (const std::exception& e) {

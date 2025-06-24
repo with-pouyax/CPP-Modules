@@ -13,7 +13,7 @@
 // so we can access them here and also pass them to the constructor of AForm
 
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target)
-    : AForm("Shrubbery Creation", target, SIGN_GRADE, EXEC_GRADE) {
+    : AForm("Shrubbery Creation", target.empty() ? "unknown" : target, SIGN_GRADE, EXEC_GRADE) {
 }
 
 // Copy constructor

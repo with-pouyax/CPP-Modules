@@ -3,7 +3,7 @@
 #include <iostream>
 
 PresidentialPardonForm::PresidentialPardonForm(const std::string& target)
-    : AForm("Presidential Pardon", target, SIGN_GRADE, EXEC_GRADE) {
+    : AForm("Presidential Pardon", target.empty() ? "unknown" : target, SIGN_GRADE, EXEC_GRADE) {
 }
 
 PresidentialPardonForm::PresidentialPardonForm(const PresidentialPardonForm& other)
