@@ -21,10 +21,16 @@ const char* AForm::FormNotSignedException::what() const throw() {
     return "Form is not signed!";
 }
 
+const char* AForm::FormAlreadySignedException::what() const throw() {
+    return "Form is already signed!";
+}
+
 
 //-----------------------------------------------------------------------------
 
 
+
+//-----------------------------------------------------------------------------
 // Orthodox Canonical Form
 // Constructor
 AForm::AForm(const std::string& name, const std::string& target, int gradeToSign, int gradeToExecute)
@@ -55,6 +61,12 @@ AForm& AForm::operator=(const AForm& other) {
 // Destructor
 AForm::~AForm() {}
 
+//-----------------------------------------------------------------------------
+
+
+
+
+
 
 //-----------------------------------------------------------------------------
 
@@ -83,12 +95,22 @@ const std::string& AForm::getTarget() const {
     return _target;
 }
 
+//-----------------------------------------------------------------------------
+
+
+
+
+
+
 
 //-----------------------------------------------------------------------------
 
 
 // Member functions
 void AForm::beSigned(const Bureaucrat& bureaucrat) {
+    if (_isSigned) {
+        throw FormAlreadySignedException();
+    }
     if (bureaucrat.getGrade() <= _gradeRequiredToSign) { // if the bureaucrat's grade is less than or equal to the grade required
         _isSigned = true; // we set the form to signed
     } else {
@@ -110,6 +132,7 @@ void AForm::checkExecutionRequirements(const Bureaucrat& executor) const {
         throw GradeTooLowToExecuteException(); // we throw an exception
 }
 
+
 // Overload of the insertion operator
 std::ostream& operator<<(std::ostream& os, const AForm& form) {
     os << "Form: " << form.getName()
@@ -118,4 +141,4 @@ std::ostream& operator<<(std::ostream& os, const AForm& form) {
        << ", Grade required to sign: " << form.getGradeRequiredToSign()
        << ", Grade required to execute: " << form.getGradeRequiredToExecute();
     return os;
-} 
+}

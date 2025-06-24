@@ -1,6 +1,7 @@
 #include "ShrubberyCreationForm.hpp"
 #include "Bureaucrat.hpp"
 #include <fstream>
+#include <iostream>
 
 //-----------------------------------------------------------------------------
 
@@ -62,4 +63,6 @@ void ShrubberyCreationForm::execute(Bureaucrat const & executor) const {
     outFile << "      ||      " << std::endl;
     
     outFile.close();
+    
+    std::cout << "\033[33m[WARNING]\033[0m Shrubbery created successfully in file: " << filename << std::endl << std::endl;
 } 

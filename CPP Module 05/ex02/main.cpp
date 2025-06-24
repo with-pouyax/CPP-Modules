@@ -3,6 +3,8 @@
 #include "RobotomyRequestForm.hpp"
 #include "PresidentialPardonForm.hpp"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
@@ -42,15 +44,15 @@ void testShrubberyCreationForm() {
         printSubHeader("Form Information");   
         std::cout << YELLOW << form << RESET << std::endl;
         
-        printSubHeader("Testing Low Grade Bureaucrat");
+        printSubHeader("1- Testing Low Grade Bureaucrat");
         std::cout << MAGENTA << "Attempting to sign with " << lowGrade << RESET << std::endl;
         lowGrade.signForm(form);
         
-        printSubHeader("Testing High Grade Bureaucrat");
+        printSubHeader("2- Testing High Grade Bureaucrat");
         std::cout << MAGENTA << "Attempting to sign with " << highGrade << RESET << std::endl;
         highGrade.signForm(form);
         
-        printSubHeader("Testing Form Execution");
+        printSubHeader("3- Testing Form Execution");
         std::cout << MAGENTA << "Attempting to execute with low grade bureaucrat:" << RESET << std::endl;
         lowGrade.executeForm(form);
         std::cout << MAGENTA << "\nAttempting to execute with high grade bureaucrat:" << RESET << std::endl;
@@ -66,21 +68,25 @@ void testRobotomyRequestForm() {
     
     try {
         Bureaucrat highGrade("HighGrade", 1);
-        Bureaucrat mediumGrade("MediumGrade", 50);
+        Bureaucrat mediumGrade("MediumGrade", 80);
         RobotomyRequestForm form("Bender");
 
         printSubHeader("Form Information");
         std::cout << YELLOW << form << RESET << std::endl;
         
-        printSubHeader("Testing Execution Without Signature");
+        printSubHeader("1- Testing Execution Without Signature");
         std::cout << MAGENTA << "Attempting to execute without signing:" << RESET << std::endl;
         highGrade.executeForm(form);
         
-        printSubHeader("Testing Form Signing");
+
+        printSubHeader("2- Testing Form Signing");
+        std::cout << MAGENTA << "Signing the form with medium grade bureaucrat:" << RESET << std::endl;
+        mediumGrade.signForm(form);
+
         std::cout << MAGENTA << "Signing the form with high grade bureaucrat:" << RESET << std::endl;
         highGrade.signForm(form);
         
-        printSubHeader("Testing Multiple Robotomy Attempts");
+        printSubHeader("3- Testing Multiple Robotomy Attempts");
         std::cout << MAGENTA << "Executing form multiple times with high grade bureaucrat:" << RESET << std::endl;
         for (int i = 0; i < 3; ++i) {
             std::cout << "\nAttempt " << (i + 1) << ":" << std::endl;
@@ -123,10 +129,38 @@ void testPresidentialPardonForm() {
     }
 }
 
+void testAlreadySignedForm() {
+    printHeader("TESTING ALREADY SIGNED FORM BEHAVIOR");
+    
+    try {
+        Bureaucrat bureaucrat1("Bureaucrat1", 1);
+        Bureaucrat bureaucrat2("Bureaucrat2", 1);
+        ShrubberyCreationForm form("test_garden");
+
+        printSubHeader("Form Information");
+        std::cout << YELLOW << form << RESET << std::endl;
+        
+        printSubHeader("First Signing Attempt");
+        std::cout << MAGENTA << "Attempting to sign with " << bureaucrat1 << RESET << std::endl;
+        bureaucrat1.signForm(form);
+        
+        printSubHeader("Second Signing Attempt (Should Fail)");
+        std::cout << MAGENTA << "Attempting to sign again with " << bureaucrat2 << RESET << std::endl;
+        bureaucrat2.signForm(form);
+        
+        printSubHeader("Form Status After Attempts");
+        std::cout << YELLOW << form << RESET << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
+    }
+}
+
 int main() {
     testShrubberyCreationForm();
     testRobotomyRequestForm();
     testPresidentialPardonForm();
+    testAlreadySignedForm();
     
     std::cout << std::endl;
     return 0;

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <time.h>
 
 RobotomyRequestForm::RobotomyRequestForm(const std::string& target)
     : AForm("Robotomy Request", target, SIGN_GRADE, EXEC_GRADE) {
@@ -27,20 +28,14 @@ void RobotomyRequestForm::execute(Bureaucrat const & executor) const {
     
     std::cout << "* DRILLING NOISES *" << std::endl;
     
-
-    //rand creates a random number between 0 and 32767 for us
-    // the problem is in each execution of the program, the random number is the same
-    // to solve this, we need to use srand
-    // srand takes an int as a parameter, which we call seed
-    // so now if we first call srand(99) and then rand() we will get different random numbers
-    // but again, if we run the program multiple times, the random numbers will be the same
-    // now we can fix this by giving it dynamic seed every time we run the program
-    // we use time(0), it returns the current time as the number of seconds since the epoch
-    // so now every time we run the program, the seed is different
-
-    std::srand(std::time(0));
+    // Use time with microseconds for better randomness in quick successive calls
+    struct timespec ts;    //struct timespec is a data type that can store the time in nanoseconds
+    clock_gettime(CLOCK_REALTIME, &ts); // clock_gettime is a function that returns the time in nanoseconds
+                                        //it receives two parameters: 1- the clock id, which is CLOCK_REALTIME means the current time
+                                        //2- the address of the struct timespec variable to store the time
+    long randomValue = ts.tv_nsec; // nanoseconds for microsecond precision
     
-    if (std::rand() % 2) { // rand() % 2 will return 0 or 1
+    if ((randomValue % 2) == 0) {
         std::cout << getTarget() << " has been robotomized successfully!" << std::endl;
     } else {
         std::cerr << "Robotomy failed on " << getTarget() << "." << std::endl;

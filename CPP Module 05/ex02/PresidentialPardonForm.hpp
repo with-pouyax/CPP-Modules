@@ -11,7 +11,7 @@ public:
     PresidentialPardonForm& operator=(const PresidentialPardonForm& other);
     virtual ~PresidentialPardonForm();
 
-    virtual void execute(Bureaucrat const & executor) const;
+    virtual void execute(Bureaucrat const & executor) const; // it needs to be virtual because it is a child class of AForm
 
     static const int SIGN_GRADE = 25;
     static const int EXEC_GRADE = 5;

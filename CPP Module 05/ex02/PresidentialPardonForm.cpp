@@ -21,7 +21,7 @@ PresidentialPardonForm::~PresidentialPardonForm() {
 }
 
 void PresidentialPardonForm::execute(Bureaucrat const & executor) const {
-    checkExecutionRequirements(executor);
+    checkExecutionRequirements(executor); // we check if the form is signed and if the executor's grade is greater than the grade required
     
     std::cout << getTarget() << " has been pardoned by Zaphod Beeblebrox." << std::endl;
 } 

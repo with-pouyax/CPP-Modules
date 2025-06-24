@@ -36,7 +36,7 @@ public:
     void incrementGrade();                      // increment the grade of the bureaucrat
     void decrementGrade();                      // decrement the grade of the bureaucrat
     void signForm(AForm& form);                 // sign a form
-    void executeForm(AForm const & form) const; // execute a form                      //new
+    void executeForm(AForm const & form) const; // execute a form                  //new
 
 
 
