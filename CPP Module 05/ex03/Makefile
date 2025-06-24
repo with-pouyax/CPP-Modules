@@ -1,6 +1,6 @@
 NAME = bureaucrat
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g
+CFLAGS = -Wall -Wextra -Werror -std=c++98
 DEPFLAGS = -MMD -MP
 
 SRCS = main.cpp \
