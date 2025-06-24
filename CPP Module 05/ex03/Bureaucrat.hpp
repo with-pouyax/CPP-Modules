@@ -19,17 +19,19 @@ private:
 public:
 
     // Orthodox Canonical Form
+    //===============================================
     Bureaucrat(const std::string& name, int grade); // constructor with name and grade
     Bureaucrat(const Bureaucrat& other);            // copy constructor
     Bureaucrat& operator=(const Bureaucrat& other); // assignment operator
     ~Bureaucrat();                              // destructor
-
+    //===============================================
 
 
     // Getters
+    //===============================================
     const std::string& getName() const;         // get the name of the bureaucrat
     int getGrade() const;                       // get the grade of the bureaucrat
-
+    //===============================================
 
 
     // Member functions

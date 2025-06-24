@@ -53,6 +53,7 @@ public:
     virtual void execute(Bureaucrat const & executor) const = 0;
     
     // Exception classes
+    //===============================================
     class GradeTooHighException : public std::exception {
     public:
         virtual const char* what() const throw();
@@ -67,6 +68,12 @@ public:
     public:
         virtual const char* what() const throw();
     };
+
+    class FormAlreadySignedException : public std::exception {
+    public:
+        virtual const char* what() const throw();
+    };
+    //===============================================
 
     // Protected function to check execution requirements
 protected:

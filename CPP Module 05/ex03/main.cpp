@@ -33,92 +33,103 @@ void printTestResult(const std::string& testName, bool success) {
               << RESET << testName << std::endl;
 }
 
-void testShrubberyCreationForm() {
-    printHeader("TESTING SHRUBBERY CREATION FORM");
+void testInternWithEmptyTarget() {
+    printHeader("TESTING INTERN WITH EMPTY TARGET");
     
     try {
-        Bureaucrat highGrade("HighGrade", 1); // we make a bureaucrat with the highest grade
-        Bureaucrat lowGrade("LowGrade", 150); // we make a bureaucrat with the lowest grade
-        ShrubberyCreationForm form("garden"); // we make a shrubbery creation form with the target "garden"
+        Intern intern;
+        
+        printSubHeader("Testing Forms with Empty Target");
+        std::cout << MAGENTA << "Creating forms with empty target (should use 'unknown'):" << RESET << std::endl;
+        
+        AForm* scf = intern.makeForm("shrubbery creation", "");
+        std::cout << YELLOW << "Created: " << *scf << RESET << std::endl;
+        delete scf;
+        
+        AForm* rrf = intern.makeForm("robotomy request", "");
+        std::cout << YELLOW << "Created: " << *rrf << RESET << std::endl;
+        delete rrf;
+        
+        AForm* ppf = intern.makeForm("presidential pardon", "");
+        std::cout << YELLOW << "Created: " << *ppf << RESET << std::endl;
+        delete ppf;
 
-        printSubHeader("Form Information");   
-        std::cout << YELLOW << form << RESET << std::endl;
-        
-        printSubHeader("Testing Low Grade Bureaucrat");
-        std::cout << MAGENTA << "Attempting to sign with " << lowGrade << RESET << std::endl;
-        lowGrade.signForm(form);
-        
-        printSubHeader("Testing High Grade Bureaucrat");
-        std::cout << MAGENTA << "Attempting to sign with " << highGrade << RESET << std::endl;
-        highGrade.signForm(form);
-        
-        printSubHeader("Testing Form Execution");
-        std::cout << MAGENTA << "Attempting to execute with low grade bureaucrat:" << RESET << std::endl;
-        lowGrade.executeForm(form);
-        std::cout << MAGENTA << "\nAttempting to execute with high grade bureaucrat:" << RESET << std::endl;
-        highGrade.executeForm(form);
+        AForm* unknown = intern.makeForm("", "");
+        std::cout << YELLOW << "Created: " << *unknown << RESET << std::endl;
+        delete unknown;
     }
     catch (const std::exception& e) {
         std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
     }
 }
 
-void testRobotomyRequestForm() {
-    printHeader("TESTING ROBOTOMY REQUEST FORM");
+void testInternCaseSensitivity() {
+    printHeader("TESTING INTERN CASE SENSITIVITY");
     
     try {
-        Bureaucrat highGrade("HighGrade", 1);
-        Bureaucrat mediumGrade("MediumGrade", 50);
-        RobotomyRequestForm form("Bender");
-
-        printSubHeader("Form Information");
-        std::cout << YELLOW << form << RESET << std::endl;
+        Intern intern;
         
-        printSubHeader("Testing Execution Without Signature");
-        std::cout << MAGENTA << "Attempting to execute without signing:" << RESET << std::endl;
-        highGrade.executeForm(form);
-        
-        printSubHeader("Testing Form Signing");
-        std::cout << MAGENTA << "Signing the form with high grade bureaucrat:" << RESET << std::endl;
-        highGrade.signForm(form);
-        
-        printSubHeader("Testing Multiple Robotomy Attempts");
-        std::cout << MAGENTA << "Executing form multiple times with high grade bureaucrat:" << RESET << std::endl;
-        for (int i = 0; i < 3; ++i) {
-            std::cout << "\nAttempt " << (i + 1) << ":" << std::endl;
-            highGrade.executeForm(form);
+        printSubHeader("Testing Different Case Variations");
+        std::cout << MAGENTA << "Testing 'SHRUBBERY CREATION':" << RESET << std::endl;
+        try {
+            AForm* form = intern.makeForm("SHRUBBERY CREATION", "garden");
+            std::cout << YELLOW << "Created: " << *form << RESET << std::endl;
+            delete form;
+        } catch (const Intern::UnknownFormException& e) {
+            std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
         }
         
-        printSubHeader("Testing Medium Grade Execution");
-        std::cout << MAGENTA << "Attempting to execute with " << mediumGrade << RESET << std::endl;
-        mediumGrade.executeForm(form);
+        std::cout << MAGENTA << "Testing 'Robotomy Request':" << RESET << std::endl;
+        try {
+            AForm* form = intern.makeForm("Robotomy Request", "Bender");
+            std::cout << YELLOW << "Created: " << *form << RESET << std::endl;
+            delete form;
+        } catch (const Intern::UnknownFormException& e) {
+            std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
+        }
     }
     catch (const std::exception& e) {
         std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
     }
 }
 
-void testPresidentialPardonForm() {
-    printHeader("TESTING PRESIDENTIAL PARDON FORM");
+void testCompleteWorkflowWithAllForms() {
+    printHeader("TESTING COMPLETE WORKFLOW WITH ALL FORMS");
     
     try {
-        Bureaucrat president("President", 1);
-        Bureaucrat secretary("Secretary", 20);
-        PresidentialPardonForm form("Arthur Dent");
-
-        printSubHeader("Form Information");
-        std::cout << YELLOW << form << RESET << std::endl;
+        Intern intern;
+        Bureaucrat boss("Boss", 1);
+        Bureaucrat worker("Worker", 150);
         
-        printSubHeader("Testing Secretary Actions");
-        std::cout << MAGENTA << "Attempting to sign with " << secretary << RESET << std::endl;
-        secretary.signForm(form);
-        std::cout << MAGENTA << "\nAttempting to execute with secretary:" << RESET << std::endl;
-        secretary.executeForm(form);
+        printSubHeader("Testing Shrubbery Creation Workflow");
+        AForm* scf = intern.makeForm("shrubbery creation", "office_garden");
+        std::cout << YELLOW << "Created: " << *scf << RESET << std::endl;
         
-        printSubHeader("Testing Presidential Actions");
-        std::cout << MAGENTA << "Attempting actions with " << president << RESET << std::endl;
-        president.signForm(form);
-        president.executeForm(form);
+        std::cout << MAGENTA << "Worker trying to sign:" << RESET << std::endl;
+        worker.signForm(*scf);
+        
+        std::cout << MAGENTA << "Boss signing and executing:" << RESET << std::endl;
+        boss.signForm(*scf);
+        boss.executeForm(*scf);
+        delete scf;
+        
+        printSubHeader("Testing Robotomy Request Workflow");
+        AForm* rrf = intern.makeForm("robotomy request", "Robot");
+        std::cout << YELLOW << "Created: " << *rrf << RESET << std::endl;
+        
+        std::cout << MAGENTA << "Boss signing and executing:" << RESET << std::endl;
+        boss.signForm(*rrf);
+        boss.executeForm(*rrf);
+        delete rrf;
+        
+        printSubHeader("Testing Presidential Pardon Workflow");
+        AForm* ppf = intern.makeForm("presidential pardon", "Prisoner");
+        std::cout << YELLOW << "Created: " << *ppf << RESET << std::endl;
+        
+        std::cout << MAGENTA << "Boss signing and executing:" << RESET << std::endl;
+        boss.signForm(*ppf);
+        boss.executeForm(*ppf);
+        delete ppf;
     }
     catch (const std::exception& e) {
         std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
@@ -127,76 +138,14 @@ void testPresidentialPardonForm() {
 
 int main() {
     try {
-        // Test Intern class
-        printHeader("Testing Intern");
-        {
-            Intern someRandomIntern; // we create an intern object
-            AForm* rrf = NULL; // we create a pointer to an AForm object and initialize it to NULL
-            
-            try {
-                // Test creating RobotomyRequestForm
-                rrf = someRandomIntern.makeForm("robotomy request", "Bender"); // we make a form with the name "robotomy request" and the target "Bender"
-                std::cout << *rrf << std::endl; // we print the form
-                delete rrf; // we delete the form
-                rrf = NULL; // we set the pointer to NULL
-
-                // Test creating PresidentialPardonForm
-                AForm* ppf = someRandomIntern.makeForm("presidential pardon", "Criminal");
-                std::cout << *ppf << std::endl;
-                delete ppf;
-
-                // Test creating ShrubberyCreationForm
-                AForm* scf = someRandomIntern.makeForm("shrubbery creation", "Garden");
-                std::cout << *scf << std::endl;
-                delete scf;
-
-                // Test invalid form name
-                try {
-                    AForm* invalid = someRandomIntern.makeForm("invalid form", "Target");
-                    delete invalid; // This line won't be reached
-                } 
-                catch (Intern::UnknownFormException& e) {
-                    std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
-                }
-            }
-            catch (Intern::FormAllocationException& e) {
-                std::cout << RED << "Memory allocation failed: " << e.what() << RESET << std::endl;
-                delete rrf; // Clean up if allocation failed after rrf
-            }
-        }
-
-        // Test complete workflow
-        printHeader("Testing Complete Workflow");
-        {
-            Intern intern; // we create an intern object
-            Bureaucrat boss("Boss", 1); // we create a bureaucrat object with the name "Boss" and the grade 1
-            Bureaucrat worker("Worker", 150); // we create a bureaucrat object with the name "Worker" and the grade 150
-            AForm* form = NULL; // we create a pointer to an AForm object and initialize it to NULL
-
-            try {
-                form = intern.makeForm("robotomy request", "Bender"); // we make a form with the name "robotomy request" and the target "Bender"
-                
-                std::cout << "\nTrying to execute without signing:" << std::endl; // we try to execute the form without signing
-                try {
-                    boss.executeForm(*form);
-                } 
-                catch (std::exception& e) {
-                    std::cout << RED << "Exception caught: " << e.what() << RESET << std::endl;
-                }
-
-                std::cout << "\nSigning and executing the form:" << std::endl;
-                boss.signForm(*form);
-                boss.executeForm(*form);
-            }
-            catch (Intern::FormAllocationException& e) {
-                std::cout << RED << "Memory allocation failed: " << e.what() << RESET << std::endl;
-            }
-            catch (std::exception& e) {
-                std::cout << RED << "Unexpected error: " << e.what() << RESET << std::endl;
-            }
-
-            delete form; // Safe to delete even if NULL
-        }
+        // Test Intern functionality (the only new feature in ex03)
+        testInternWithEmptyTarget();
+        testInternCaseSensitivity();
+        testCompleteWorkflowWithAllForms();
+        
+        std::cout << std::endl << GREEN << "══════════════════════════════════════════════════════════════" << RESET << std::endl;
+        std::cout << GREEN << "                    ALL INTERN TESTS COMPLETED SUCCESSFULLY!" << RESET << std::endl;
+        std::cout << GREEN << "══════════════════════════════════════════════════════════════" << RESET << std::endl;
 
     } catch (std::exception& e) {
         std::cout << RED << "Main exception caught: " << e.what() << RESET << std::endl;

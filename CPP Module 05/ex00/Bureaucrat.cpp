@@ -12,7 +12,7 @@ const char* Bureaucrat::GradeTooLowException::what() const throw() {
 }
 
 // Constructor
-Bureaucrat::Bureaucrat(const std::string& name, int grade) : _name(name) {
+Bureaucrat::Bureaucrat(const std::string& name, int grade) : _name(name.empty() ? "unknown" : name) {
     if (grade < 1)
         throw GradeTooHighException();
     if (grade > 150)

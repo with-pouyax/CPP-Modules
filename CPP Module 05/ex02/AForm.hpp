@@ -17,11 +17,11 @@ class AForm {
 
 private:
 
-    const std::string _name;           // name of Form           
-    bool _isSigned;                    // signed status
+    const std::string _name;                      
+    bool _isSigned;                    
     const int _gradeRequiredToSign; 
     const int _gradeRequiredToExecute; 
-    const std::string _target;         // target of Form
+    const std::string _target;         
 
     
     // Private default constructor
@@ -32,7 +32,7 @@ public:
     
     // Orthodox Canonical Form
     //===============================================
-    AForm(const std::string& name, const std::string& target, int gradeToSign, int gradeToExecute);
+    AForm(const std::string& name, const std::string& target, int gradeToSign, int gradeToExecute); 
     AForm(const AForm& other);
     AForm& operator=(const AForm& other);
     virtual ~AForm();

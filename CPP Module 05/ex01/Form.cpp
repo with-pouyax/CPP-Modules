@@ -16,7 +16,7 @@ const char* Form::FormAlreadySignedException::what() const throw() {
 
 // Constructor
 Form::Form(const std::string& name, int gradeToSign, int gradeToExecute)
-    : _name(name), _isSigned(false), _gradeRequiredToSign(gradeToSign), _gradeRequiredToExecute(gradeToExecute) {
+    : _name(name.empty() ? "unknown" : name), _isSigned(false), _gradeRequiredToSign(gradeToSign), _gradeRequiredToExecute(gradeToExecute) {
     if (gradeToSign < 1 || gradeToExecute < 1)
         throw GradeTooHighException();
     if (gradeToSign > 150 || gradeToExecute > 150)

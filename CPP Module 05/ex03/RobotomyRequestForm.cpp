@@ -5,7 +5,7 @@
 #include <ctime>
 
 RobotomyRequestForm::RobotomyRequestForm(const std::string& target)
-    : AForm("Robotomy Request", target, SIGN_GRADE, EXEC_GRADE) {
+    : AForm("Robotomy Request", target.empty() ? "unknown" : target, SIGN_GRADE, EXEC_GRADE) {
 }
 
 RobotomyRequestForm::RobotomyRequestForm(const RobotomyRequestForm& other)

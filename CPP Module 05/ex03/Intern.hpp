@@ -23,7 +23,7 @@ public:
 
     // Main functionality
     // we make a form with the name and target that we recieve as parameters
-    AForm* makeForm(const std::string& formName, const std::string& target);
+    AForm* makeForm(const std::string& formName, const std::string& target); //
 
     // Exception classes
     // we throw this exception if the form name is not found

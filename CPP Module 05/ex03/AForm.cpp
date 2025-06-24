@@ -10,11 +10,15 @@ const char* AForm::GradeTooHighException::what() const throw() {
 }
 
 const char* AForm::GradeTooLowException::what() const throw() {
-    return "Form grade is too low!";
+    return "Bureaucrat grade is too low!";
 }
 
 const char* AForm::FormNotSignedException::what() const throw() {
     return "Form is not signed!";
+}
+
+const char* AForm::FormAlreadySignedException::what() const throw() {
+    return "Form is already signed!";
 }
 
 
@@ -85,6 +89,9 @@ const std::string& AForm::getTarget() const {
 
 // Member functions
 void AForm::beSigned(const Bureaucrat& bureaucrat) {
+    if (_isSigned) {
+        throw FormAlreadySignedException();
+    }
     if (bureaucrat.getGrade() <= _gradeRequiredToSign) { // if the bureaucrat's grade is less than or equal to the grade required
         _isSigned = true; // we set the form to signed
     } else {
