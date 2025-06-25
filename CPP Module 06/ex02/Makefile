@@ -4,7 +4,10 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g
 DEPFLAGS = -MMD -MP
 
 SRCS = main.cpp \
-       Base.cpp
+       Base.cpp \
+       A.cpp \
+       B.cpp \
+       C.cpp
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
 

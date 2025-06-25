@@ -1,9 +1,16 @@
 #include "Base.hpp"
+#include "A.hpp"
+#include "B.hpp"
+#include "C.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include <new>
 #include <typeinfo>
+
+Base::~Base() {
+    // Empty destructor implementation
+}
 
 Base* generate(void) {
     
@@ -35,7 +42,7 @@ Base* generate(void) {
             case 2:
                 return new C();
             default:
-                return NULL;
+                return NULL;  
         }
     } catch (const std::bad_alloc& e) {
         std::cerr << "Memory allocation failed: " << e.what() << std::endl;
@@ -61,7 +68,8 @@ void identify(Base* p) { // here we recieve a pointer to a Base object
 
 void identify(Base& p) { // here we recieve a reference to a Base object
                          // so we can't check if it's NULL
-    try {
+    try { // when we try to dynamic cast a reference, in case of failure, dynamic_cast will throw a bad_cast exception
+          // it doesn't return NULL, because a reference can't be NULL
         (void)dynamic_cast<A&>(p); // since a reference can't be NULL, in case of failure, dynamic_cast will throw a bad_cast exception
         std::cout << "A" << std::endl;
         return;

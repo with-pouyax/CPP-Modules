@@ -5,12 +5,8 @@ class Base {
 public:
     // we don't have a constructor because we don't want to initialize the object
     // we have only a virtual destructor
-    virtual ~Base() {}
+    virtual ~Base();
 };
-
-class A : public Base {};
-class B : public Base {};
-class C : public Base {};
 
 Base* generate(void); // generate a random object of A, B or C
 void identify(Base* p); 
