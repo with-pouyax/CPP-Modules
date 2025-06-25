@@ -13,7 +13,7 @@ private:
     ~Serializer();
 
 public:
-    static uintptr_t serialize(Data* ptr);
+    static uintptr_t serialize(Data* ptr);   //uintptr_t is an unsigned integer type that is used to store a pointer
     static Data* deserialize(uintptr_t raw);
 };
 

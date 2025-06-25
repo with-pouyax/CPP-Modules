@@ -66,7 +66,8 @@ int main() {
     // Test 3: Zero value case
     std::cout << "Test 3: Zero value case" << std::endl;
     std::cout << "---------------------" << std::endl;
-    Data* zeroPtr = Serializer::deserialize(0); //we test here if the pointer is NULL means that the pointer is not valid, so -1 is al
+    Data* zeroPtr = Serializer::deserialize(0); //we test here if the pointer is NULL means that the pointer is not valid, so -1 is also not valid
+    //so we need to handle this case
     if (zeroPtr == NULL) {
         std::cout << "Successfully handled zero value case!" << std::endl;
     } else {
