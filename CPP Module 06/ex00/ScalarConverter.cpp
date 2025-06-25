@@ -169,24 +169,19 @@ check_char:
 
             float f = static_cast<float>(d);
 
-            if (std::isnan(f) || std::isinf(f)) {                                  //an extra check for overflow and underflow and nan and inf                         
-                std::cout << "char: impossible" << std::endl;                                      //print impossible for char
-                std::cout << "int: impossible" << std::endl;                                       //print impossible for int
-            } else {   //if we have a valid float
-                if (f > std::numeric_limits<int>::max() || f < std::numeric_limits<int>::min()) {  //if the float is greater than the max int or less than the min int
-                    std::cout << "char: impossible" << std::endl;
-                    std::cout << "int: impossible" << std::endl;
-                } else {                                                                           //if the float is in the range of int
-                    int i = static_cast<int>(f);                                                   //we static cast the float to an int because it is a downcast
-                    if (i < 0 || i > 127)                                                          //if the int is not in the range of ascii values
-                        std::cout << "char: impossible" << std::endl;                               //print impossible for char
-                    else if (!isprint(i))                                                          //else if the int is not printable (not in the range of printable ascii values)
-                        std::cout << "char: Non displayable" << std::endl;                           //print Non displayable for char
-                    else                                                                             //else
-                        std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;         // else means the int is in the range of printable ascii values
-                    std::cout << "int: " << i << std::endl;
-                }
-            }                                                                                       //we need std::fixed in order to use std::setprecision
+            if (f > std::numeric_limits<int>::max() || f < std::numeric_limits<int>::min()) {  //if the float is greater than the max int or less than the min int
+                std::cout << "char: impossible" << std::endl;
+                std::cout << "int: impossible" << std::endl;
+            } else {                                                                           //if the float is in the range of int
+                int i = static_cast<int>(f);                                                   //we static cast the float to an int because it is a downcast
+                if (i < 0 || i > 127)                                                          //if the int is not in the range of ascii values
+                    std::cout << "char: impossible" << std::endl;                               //print impossible for char
+                else if (!isprint(i))                                                          //else if the int is not printable (not in the range of printable ascii values)
+                    std::cout << "char: Non displayable" << std::endl;                           //print Non displayable for char
+                else                                                                             //else
+                    std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;         // else means the int is in the range of printable ascii values
+                std::cout << "int: " << i << std::endl;
+            }
             std::cout << std::fixed << std::setprecision(1) << "float: " << f << "f" << std::endl;  //using setprecision(1) we print the float with 1 decimal place plus the f at the end
             std::cout << std::fixed << std::setprecision(1) << "double: " << d << std::endl;        //using setprecision(1) we print the double with 1 decimal place
             return;
@@ -258,23 +253,18 @@ check_double:
 
             float f = static_cast<float>(d);
 
-            if (std::isnan(d) || std::isinf(d)) {
+            if (d > std::numeric_limits<int>::max() || d < std::numeric_limits<int>::min()) {
                 std::cout << "char: impossible" << std::endl;
                 std::cout << "int: impossible" << std::endl;
             } else {
-                if (d > std::numeric_limits<int>::max() || d < std::numeric_limits<int>::min()) {
+                int i = static_cast<int>(d);
+                if (i < 0 || i > 127)
                     std::cout << "char: impossible" << std::endl;
-                    std::cout << "int: impossible" << std::endl;
-                } else {
-                    int i = static_cast<int>(d);
-                    if (i < 0 || i > 127)
-                        std::cout << "char: impossible" << std::endl;
-                    else if (!isprint(i))
-                        std::cout << "char: Non displayable" << std::endl;
-                    else
-                        std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;
-                    std::cout << "int: " << i << std::endl;
-                }
+                else if (!isprint(i))
+                    std::cout << "char: Non displayable" << std::endl;
+                else
+                    std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;
+                std::cout << "int: " << i << std::endl;
             }
             std::cout << std::fixed << std::setprecision(1) << "float: " << f << "f" << std::endl;
             std::cout << std::fixed << std::setprecision(1) << "double: " << d << std::endl;
@@ -285,4 +275,4 @@ check_double:
 invalid_input:
     // Invalid input format(not int, char, float or double)
     std::cout << "Invalid input format" << std::endl;
-} 
+}
