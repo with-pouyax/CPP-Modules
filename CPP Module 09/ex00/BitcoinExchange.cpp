@@ -74,8 +74,8 @@ int Date::getDaysInMonth(int year, int month) const
 
 bool Date::isValidDate() const
 {
-	// Validate year range (reasonable bounds) - but allow data.csv range
-	if (_year < 1900 || _year > 2100)
+	// Validate year (must not be negative)
+	if (_year < 0)
 		return false;
 	
 	// Validate month (1-12)
@@ -347,31 +347,45 @@ void BitcoinExchange::printError(const std::string& message) const
 	std::cerr << "Error: " << message << std::endl;
 }
 
+// Helper function to trim whitespace from both ends of a string
+std::string BitcoinExchange::trimWhitespace(const std::string& str) const
+{
+	size_t start = str.find_first_not_of(" \t\r\n");
+	if (start == std::string::npos)
+		return "";
+	size_t end = str.find_last_not_of(" \t\r\n");
+	return str.substr(start, end - start + 1);
+}
+
 void BitcoinExchange::processLine(const std::string& line) const
 {
 	if (line.empty())
 		return;
 	
-	// Parse format: "date | value"
-	size_t pipePos = line.find(" | ");
-	if (pipePos == std::string::npos)
+	// Strictly enforce "date | value" format: exactly one space before and after '|', and no extra spaces
+	size_t pipePos = line.find('|');
+	if (pipePos == std::string::npos ||
+	    pipePos == 0 || pipePos == line.length() - 1 ||
+	    line[pipePos - 1] != ' ' || line[pipePos + 1] != ' ')
 	{
 		printError("bad input => " + line);
 		return;
 	}
-	
-	std::string dateStr = line.substr(0, pipePos);
-	std::string valueStr = line.substr(pipePos + 3);
-	
-	// Trim whitespace from valueStr
-	size_t start = valueStr.find_first_not_of(" \t\r\n");
-	if (start == std::string::npos)
+
+	// Check for multiple spaces before or after the pipe
+	if ((pipePos >= 2 && line[pipePos - 2] == ' ') ||
+	    (pipePos + 2 < line.length() && line[pipePos + 2] == ' '))
 	{
-		printError("bad input => ");
+		printError("bad input => " + line);
 		return;
 	}
-	size_t end = valueStr.find_last_not_of(" \t\r\n");
-	valueStr = valueStr.substr(start, end - start + 1);
+
+	std::string dateStr = line.substr(0, pipePos - 1);
+	std::string valueStr = line.substr(pipePos + 2);
+	
+	// Trim whitespace from both date and value strings
+	dateStr = trimWhitespace(dateStr);
+	valueStr = trimWhitespace(valueStr);
 	
 	// Validate date
 	Date date;

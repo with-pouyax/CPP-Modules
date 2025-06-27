@@ -76,6 +76,7 @@ public:
 	void processLine(const std::string& line) const;
 	void printResult(const Date& date, float value, float rate) const;
 	void printError(const std::string& message) const;
+	std::string trimWhitespace(const std::string& str) const;
 };
 
 #endif 
