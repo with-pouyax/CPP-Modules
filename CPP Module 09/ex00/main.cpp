@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		BitcoinExchange exchange;
+		BitcoinExchange exchange;           // Create an instance of BitcoinExchange
 		
 		// Load the database
 		exchange.loadDatabase("data.csv");
