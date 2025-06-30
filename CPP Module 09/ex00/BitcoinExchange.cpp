@@ -185,16 +185,16 @@ void BitcoinExchange::processLine(const std::string& line) const
 	if (pipePos == std::string::npos || //if we don't find pipe
 	    pipePos == 0 ||                 //if pipe is at the beginning of the line
 		pipePos == line.length() - 1 || //if pipe is at the end of the line
-	    line[pipePos - 1] != ' ' ||     // if there is no space before the pipe
-		 line[pipePos + 1] != ' ')      // if there is no space after the pipe
+	    line[pipePos - 1] != ' ' ||     //if there is no space before the pipe
+		 line[pipePos + 1] != ' ')      //if there is no space after the pipe
 	{
 		printError("bad input => " + line);
 		return;
 	}
 
-	// Check for multiple spaces before or after the pipe
-	if ((pipePos >= 2 && line[pipePos - 2] == ' ') ||
-	    (pipePos + 2 < line.length() && line[pipePos + 2] == ' '))
+	// Check for multiple spaces or any whitespace before or after the pipe
+	if ((pipePos >= 2 && std::isspace(line[pipePos - 2])) ||
+	    (pipePos + 2 < line.length() && std::isspace(line[pipePos + 2])))
 	{
 		printError("bad input => " + line);
 		return;
@@ -258,7 +258,7 @@ void BitcoinExchange::processInputFile(const std::string& filename)
 		// Look for header on first non-empty line
 		if (!foundHeader && !headerErrorReported) //if still not found header and not reported error
 		{
-			std::string trimmed = trimWhitespace(line); 
+			std::string trimmed = trimWhitespace(line);  // trim the whitespace from the line
 			if (trimmed == "date | value")
 			{
 				foundHeader = true;
