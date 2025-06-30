@@ -35,12 +35,11 @@ public:
 	void parseDate(const std::string& dateStr);
 
 	// --------- Comparison operators for std::map ---------
-	bool operator<(const Date& other) const;
-	bool operator<=(const Date& other) const;
-	bool operator==(const Date& other) const;
-	bool operator!=(const Date& other) const;
-	bool operator>(const Date& other) const;
-	bool operator>=(const Date& other) const;
+	bool operator<(const Date& other) const; // we expect left side of '<' to be type of Date and right side to be type of Date
+	                                         // we need this for std::map to work, because it uses this operator to sort the elements
+	
+	
+	bool operator==(const Date& other) const; //for exact date comparison, where we do it->first == date
 
 	// --------- Getters ---------
 	int getYear() const;

@@ -50,10 +50,14 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) co
 	
 	// Parse the float value first to handle NaN/Inf appropriately
 	char* endPtr;
-	value = std::strtof(valueStr.c_str(), &endPtr);
+	value = std::strtof(valueStr.c_str(), &endPtr);  // we convert the valueStr to float and save it in value
+	                                                              // second argument is the end pointer
+																  // if conversion is successful, endPtr will point to the last character of the string
+																  // if conversion is not successful, endPtr will point to the first non-digit character
+
 	
 	// Check if entire string was consumed
-	if (endPtr != valueStr.c_str() + valueStr.length())
+	if (endPtr != valueStr.c_str() + valueStr.length())     //valueStr.c_str() is the pointer of first character of valueStr + valueStr.length() we move to the end of the string
 	{
 		std::string errorMsg = valueStr.empty() ? "' '" : valueStr;
 		printError("bad input => " + errorMsg);
@@ -77,7 +81,7 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) co
 	}
 	
 	// Handle positive infinity and values > 1000
-	if (value > FLT_MAX || value > 1000.0f || hasNonZeroAfter1000)
+	if (value > FLT_MAX || value > 1000.0f || hasNonZeroAfter1000) //FLT_MAX is the largest positive float value
 	{
 		printError("too large a number.");
 		return false;
@@ -135,18 +139,23 @@ float BitcoinExchange::getExchangeRate(const Date& date) const
 		throw std::runtime_error("no data available");
 	
 	// Use lower_bound for efficient lookup
-	std::map<Date, float>::const_iterator it = _data.lower_bound(date);
+	std::map<Date, float>::const_iterator it = _data.lower_bound(date); //lower_bound will return an iterator to the first element in the map that is equal or greater than date
+                                                                           //if date is after the last element, it will return _data.end()
+                                                                           //if we need to access the last date we should do it--; ,
 	
-	if (it != _data.end() && it->first == date)
+	if (it != _data.end() && it->first == date) //if we are not at the end (we found the date or lower bound) and the key of the element is equal to date
+	                                            
 	{
 		// Exact match found
-		return it->second;
+		return it->second; // we return the value of the element
 	}
 	
-	// No exact match, use closest previous date
+	// if the date is before the first date in the map, we newer go to above if condition
+    // because it->first will never equal to date
 	if (it == _data.begin())
 		throw std::runtime_error("no earlier data available");
 	
+    // since subject asked to go to previous date, we do it--, in case of not finding exact date
 	--it; // Move to previous entry
 	return it->second;
 }
@@ -159,10 +168,10 @@ void BitcoinExchange::printResult(const Date& date, float value, float rate) con
 	if (date.getDay() < 10) std::cout << "0";
 	std::cout << date.getDay() << " => " << value << " = " << (value * rate) << std::endl;
 }
-
+// ******exercise asked to print everything in standard output*********
 void BitcoinExchange::printError(const std::string& message) const
 {
-	std::cerr << "Error: " << message << std::endl;
+	std::cout << "Error: " << message << std::endl;
 }
 
 // Helper function to trim whitespace from both ends of a string
@@ -208,7 +217,7 @@ void BitcoinExchange::processLine(const std::string& line) const
 	valueStr = trimWhitespace(valueStr);
 	
 	// Validate date
-	Date date;
+	Date date;         // we create a date object
 	try
 	{
 		date = Date(dateStr); // Default date constructor will parse the dateStr and save it in date object

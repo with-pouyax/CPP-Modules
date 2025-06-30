@@ -112,36 +112,18 @@ void Date::parseDate(const std::string& dateStr)
 // Comparison operators for std::map
 bool Date::operator<(const Date& other) const
 {
-	if (_year != other._year)
+	if (_year != other._year)                 //if year is not equal, we compare year
 		return _year < other._year;
-	if (_month != other._month)
+	// we only reach here if year is equal
+	if (_month != other._month)               //if month is not equal, we compare month
 		return _month < other._month;
-	return _day < other._day;
-}
-
-bool Date::operator<=(const Date& other) const
-{
-	return *this < other || *this == other;
+	// we only reach here if year and month are equal
+	return _day < other._day;               //if day is not equal, we compare day
 }
 
 bool Date::operator==(const Date& other) const
 {
 	return _year == other._year && _month == other._month && _day == other._day;
-}
-
-bool Date::operator!=(const Date& other) const
-{
-	return !(*this == other);
-}
-
-bool Date::operator>(const Date& other) const
-{
-	return !(*this <= other);
-}
-
-bool Date::operator>=(const Date& other) const
-{
-	return !(*this < other);
 }
 
 // Getters
