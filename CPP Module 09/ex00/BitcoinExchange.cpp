@@ -19,40 +19,13 @@ BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange& other)
 BitcoinExchange::~BitcoinExchange() {}
 
 // Phase 3: Value Validation
-bool BitcoinExchange::isValidFloat(const std::string& valueStr, float& value) const
-{
-	if (valueStr.empty())
-		return false;
-	
-	char* endPtr;
-	value = std::strtof(valueStr.c_str(), &endPtr);
-	
-	// Check if entire string was consumed
-	if (endPtr != valueStr.c_str() + valueStr.length())
-		return false;
-	
-	// C++98 compliant NaN/Inf detection
-	if (value != value) // NaN detection
-		return false;
-	
-	// Check for infinity (overflow) - C++98 compatible
-	if (value > FLT_MAX || value < -FLT_MAX)
-		return false;
-	
-	return true;
-}
-
-bool BitcoinExchange::isInRange(float value) const
-{
-	return value >= 0.0f && value <= 1000.0f;
-}
-
 bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) const
 {
 	// Check for empty value
 	if (valueStr.empty())
 	{
-		printError("bad input => " + valueStr);
+		std::string errorMsg = valueStr.empty() ? "' '" : valueStr;
+		printError("bad input => " + errorMsg);
 		return false;
 	}
 	
@@ -82,14 +55,16 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) co
 	// Check if entire string was consumed
 	if (endPtr != valueStr.c_str() + valueStr.length())
 	{
-		printError("bad input => " + valueStr);
+		std::string errorMsg = valueStr.empty() ? "' '" : valueStr;
+		printError("bad input => " + errorMsg);
 		return false;
 	}
 	
 	// Handle NaN (not a valid number)
 	if (value != value) // NaN detection
 	{
-		printError("bad input => " + valueStr);
+		std::string errorMsg = valueStr.empty() ? "' '" : valueStr;
+		printError("bad input => " + errorMsg);
 		return false;
 	}
 	
@@ -114,52 +89,42 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) co
 // Phase 4: CSV Database Loading
 void BitcoinExchange::loadDatabase(const std::string& filename)
 {
-	std::ifstream file(filename.c_str());
+	std::ifstream file(filename.c_str());     //make a object of ifstream which is used to open the file
 	if (!file.is_open())
 		throw std::runtime_error("could not open database file");
 	
-	std::string line;
-	bool firstLine = true;
+	std::string line;                           // we use line to store each line of the file
+	bool firstLine = true;                      //
 	
-	while (std::getline(file, line))
+	while (std::getline(file, line))    // read the file line by line until the end of the file
 	{
-		// Skip header line
+		// Skip header line always because we assume that the first line is the header
 		if (firstLine)
 		{
 			firstLine = false;
-			continue;
+			continue;                           // continue will skip the rest of loop and go to next iteration
 		}
 		
-		if (line.empty())
+		if (line.empty()) 	                    // if we have empty line, we skip it and go to next iteration
 			continue;
 		
 		// Parse CSV line: date,exchange_rate
-		size_t commaPos = line.find(',');
+		size_t commaPos = line.find(',');    // we find the position of the comma in the line
 		if (commaPos == std::string::npos)
-			continue; // Skip malformed lines
+			continue;                           // if we don't have comma, we skip it and go to next iteration
 		
-		std::string dateStr = line.substr(0, commaPos);
-		std::string rateStr = line.substr(commaPos + 1);
-		
-		try
-		{
-			Date date(dateStr);
-			float rate;
-			if (isValidFloat(rateStr, rate) && rate >= 0)
-			{
-				_data[date] = rate;
-			}
-		}
-		catch (const std::exception& e)
-		{
-			// Skip invalid entries
-			continue;
-		}
+		std::string dateStr = line.substr(0, commaPos);    // we save the before comma part of the line to dateStr
+		std::string rateStr = line.substr(commaPos + 1);     // we save the after comma part of the line to rateStr
+
+		// Trust the data format since exercise guarantees data.csv will never change
+		Date date(dateStr); // we parse and save the date in date object
+		float rate = std::atof(rateStr.c_str()); // we convert the rateStr to float and save it in rate
+		_data[date] = rate; //date(object) will be the key and rate will be the value in the _data, which is a map
 	}
 	
-	file.close();
+	file.close(); 				// we close the file
 	
-	if (_data.empty())
+	if (_data.empty())  		//this happen only if we have no data in data.csv
 		throw std::runtime_error("no valid data loaded from database");
 }
 
@@ -203,11 +168,11 @@ void BitcoinExchange::printError(const std::string& message) const
 // Helper function to trim whitespace from both ends of a string
 std::string BitcoinExchange::trimWhitespace(const std::string& str) const
 {
-	size_t start = str.find_first_not_of(" \t\r\n");
-	if (start == std::string::npos)
-		return "";
-	size_t end = str.find_last_not_of(" \t\r\n");
-	return str.substr(start, end - start + 1);
+	size_t start = str.find_first_not_of(" \t\r\n"); //find the first non-whitespace character
+	if (start == std::string::npos) // if we don't find any non-whitespace character
+		return ""; // return empty string
+	size_t end = str.find_last_not_of(" \t\r\n"); //find the last non-whitespace character
+	return str.substr(start, end - start + 1); // return the substring between the first and last non-whitespace character
 }
 
 void BitcoinExchange::processLine(const std::string& line) const
@@ -217,9 +182,11 @@ void BitcoinExchange::processLine(const std::string& line) const
 	
 	// Strictly enforce "date | value" format: exactly one space before and after '|', and no extra spaces
 	size_t pipePos = line.find('|');
-	if (pipePos == std::string::npos ||
-	    pipePos == 0 || pipePos == line.length() - 1 ||
-	    line[pipePos - 1] != ' ' || line[pipePos + 1] != ' ')
+	if (pipePos == std::string::npos || //if we don't find pipe
+	    pipePos == 0 ||                 //if pipe is at the beginning of the line
+		pipePos == line.length() - 1 || //if pipe is at the end of the line
+	    line[pipePos - 1] != ' ' ||     // if there is no space before the pipe
+		 line[pipePos + 1] != ' ')      // if there is no space after the pipe
 	{
 		printError("bad input => " + line);
 		return;
@@ -237,24 +204,25 @@ void BitcoinExchange::processLine(const std::string& line) const
 	std::string valueStr = line.substr(pipePos + 2);
 	
 	// Trim whitespace from both date and value strings
-	dateStr = trimWhitespace(dateStr);
+	dateStr = trimWhitespace(dateStr); 
 	valueStr = trimWhitespace(valueStr);
 	
 	// Validate date
 	Date date;
 	try
 	{
-		date = Date(dateStr);
+		date = Date(dateStr); // Default date constructor will parse the dateStr and save it in date object
 	}
 	catch (const std::exception& e)
 	{
-		printError("bad input => " + dateStr);
+		std::string errorMsg = dateStr.empty() ? "' '" : dateStr;
+		printError("bad input => " + errorMsg);
 		return;
 	}
 	
 	// Validate value
 	float value;
-	if (!isValidValue(valueStr, value))
+	if (!isValidValue(valueStr, value)) // validate valueStr and save it in value
 		return; // Error already printed
 	
 	// Get exchange rate and calculate result
@@ -272,24 +240,49 @@ void BitcoinExchange::processLine(const std::string& line) const
 // Phase 5: Input File Processing
 void BitcoinExchange::processInputFile(const std::string& filename)
 {
-	std::ifstream file(filename.c_str());
+	std::ifstream file(filename.c_str());                // we open the file
 	if (!file.is_open())
 		throw std::runtime_error("could not open file.");
 	
 	std::string line;
-	bool firstLine = true;
+	bool foundHeader = false;
+	bool hasAnyData = false;
+	bool headerErrorReported = false;
 	
-	while (std::getline(file, line))
+	while (std::getline(file, line))              //loop through all lines in the file
 	{
-		// Skip header line if present
-		if (firstLine && line == "date | value")
-		{
-			firstLine = false;
+		// Skip empty lines
+		if (line.empty())
 			continue;
-		}
-		firstLine = false;
 		
+		// Look for header on first non-empty line
+		if (!foundHeader && !headerErrorReported) //if still not found header and not reported error
+		{
+			std::string trimmed = trimWhitespace(line); 
+			if (trimmed == "date | value")
+			{
+				foundHeader = true;
+				continue; // go to next iteration
+			}
+			else
+			{
+				// Wrong header format - report error and skip this line
+				printError("invalid header format: expected 'date | value'");
+				headerErrorReported = true;
+				continue; // Skip the wrong header line to avoid double error
+			}
+		}
+		
+		// Process as data line (either after valid header or after header error)
 		processLine(line);
+		hasAnyData = true;
+	}
+	
+	// Check if we found any data
+	if (!hasAnyData)
+	{
+		printError("no data found in file");
+		return;
 	}
 	
 	file.close();

@@ -5,6 +5,11 @@
 # include <stdexcept>
 # include <cctype>
 # include <cstdlib>
+# include <new>
+
+// Macro to simulate new allocation failure for testing
+// Usage: std::string dateStr = FNNEW();//line.substr(0, commaPos);
+# define FNNEW() (throw std::bad_alloc(), std::string())
 
 class Date{
 

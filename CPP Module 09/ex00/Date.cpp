@@ -4,11 +4,12 @@
 // Date Class Implementation
 // ============================================================================
 
-Date::Date() : _year(1900), _month(1), _day(1) {}
+Date::Date() : _year(-1), _month(-1), _day(-1) {} // we use -1 to indicate that the date is not valid
 
-Date::Date(const std::string& dateStr) : _year(1900), _month(1), _day(1)
+Date::Date(const std::string& dateStr) : _year(-1), _month(-1), _day(-1)
 {
 	parseDate(dateStr);
+    //if we dont throw exception above, mean we have valid date and we saved it in _year, _month, _day
 }
 
 Date::Date(const Date& other) : _year(other._year), _month(other._month), _day(other._day) {}
@@ -29,7 +30,7 @@ Date::~Date() {}
 bool Date::isValidFormat(const std::string& dateStr) const
 {
 	// Check length (exactly 10 characters)
-	if (dateStr.length() != 10)
+	if (dateStr.length() != 10) // we check if the length of the dateStr is 10
 		return false;
 	
 	// Check hyphens at positions 4 and 7
@@ -37,7 +38,7 @@ bool Date::isValidFormat(const std::string& dateStr) const
 		return false;
 	
 	// Check all other characters are digits
-	for (size_t i = 0; i < dateStr.length(); ++i)
+	for (size_t i = 0; i < dateStr.length(); ++i) // we check if all other characters are digits
 	{
 		if (i != 4 && i != 7 && !std::isdigit(dateStr[i]))
 			return false;
@@ -61,13 +62,13 @@ int Date::getDaysInMonth(int year, int month) const
 {
 	switch (month)
 	{
-		case 2:
+		case 2: //in case of february
 			return isLeapYear(year) ? 29 : 28;
 		case 4: case 6: case 9: case 11:
 			return 30;
 		case 1: case 3: case 5: case 7: case 8: case 10: case 12:
 			return 31;
-		default:
+		default: //in case of invalid month
 			return 0;
 	}
 }
@@ -104,7 +105,7 @@ void Date::parseDate(const std::string& dateStr)
 	_month = std::atoi(monthStr.c_str());
 	_day = std::atoi(dayStr.c_str());
 	
-	if (!isValidDate())
+	if (!isValidDate()) 
 		throw std::runtime_error("invalid date");
 }
 

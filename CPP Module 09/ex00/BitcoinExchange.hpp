@@ -11,8 +11,12 @@
 # include <climits>
 # include <cfloat>
 # include <limits>
+# include <new>
 # include "Date.hpp"
 
+// Macro to simulate new allocation failure for testing
+// Usage: std::string dateStr = FNNEW();//line.substr(0, commaPos);
+# define FNNEW() (throw std::bad_alloc(), std::string())
 
 class BitcoinExchange
 {
@@ -33,8 +37,6 @@ public:
 
 	// --------- Validation methods ---------
 	bool isValidValue(const std::string& valueStr, float& value) const;
-	bool isValidFloat(const std::string& valueStr, float& value) const;
-	bool isInRange(float value) const;
 
 	// --------- Helper methods ---------
 	void processLine(const std::string& line) const;

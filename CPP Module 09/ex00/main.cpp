@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 		BitcoinExchange exchange;           // Create an instance of BitcoinExchange
 		
 		// Load the database
-		exchange.loadDatabase("data.csv");
+		exchange.loadDatabase("data.csv");    // Load the database from the file
 		
 		// Process the input file
 		exchange.processInputFile(argv[1]);
