@@ -1,1 +1,1 @@
-1900mis not a leap year
+1900 is not a leap year
