@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
         int result = calculator.evaluate(expression);
         std::cout << result << std::endl;
     } catch (const std::exception& e) {
-        std::cerr << "Error" << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
     
