@@ -63,7 +63,7 @@ void testLargeSpan() {
         Span sp = Span(10000);
         srand(time(NULL));
         for (int i = 0; i < 10000; ++i) {
-            sp.addNumber(rand());
+            sp.addNumber(std::rand()); // rand() generate an int between 0 and int max
         }
         std::cout << "Shortest span: " << sp.shortestSpan() << std::endl;
         std::cout << "Longest span: " << sp.longestSpan() << std::endl;
@@ -217,11 +217,12 @@ void testInvalidPointers() {
 
     try {
         Span sp = Span(5);
-        std::vector<int> v;
-        v.push_back(1);
-        v.push_back(2);
+        std::vector<int> v; // we create a vector of ints
+        v.push_back(1);     // we add 1 and 2 to the vector
+        v.push_back(2);     // we add 1 and 2 to the vector
         
         // Test with empty range (begin == end)
+        // ****** here we gave begin as both begin and end ***********
         sp.addRange(v.begin(), v.begin()); // This should throw InvalidRangeException
     } catch (const std::exception& e) {
         std::cout << "Expected error: " << e.what() << std::endl;

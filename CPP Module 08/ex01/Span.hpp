@@ -57,10 +57,11 @@ public:
 };
 
 // Template implementation must be in header
+// need a template because we want to be able to add a range of any type of container
 template<typename Iterator>
-void Span::addRange(Iterator begin, Iterator end) {
+void Span::addRange(Iterator begin, Iterator end) { // both begin and end are iterators of the same type
     // Iterator() means calling the default constructor of Iterator type
-    // since it is empty, it is not a valid iterator (samething like NULL)
+    // since it is empty, it is not a valid iterator (same thing like NULL)
     // it is used normally like std::vector<int>::iterator it = std::vector<int>::iterator();
     // When we want to make a a iterator that is not yet connected to a container
     if (begin == Iterator() || end == Iterator()) 
