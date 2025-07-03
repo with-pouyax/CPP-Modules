@@ -5,6 +5,9 @@
 int main() {
     std::cout << "\033[1;32m" << "=== SPAN CLASS TEST SUITE ===\033[0m" << std::endl;
 
+    Span sp = Span(-1);
+    std::cout << sp.size() << std::endl;
+    std::cout << "___________ha ha_____________" << std::endl;
     // Run all tests
     testBasicExample();           //1- ok
     testEmptySpan();              //2- ok

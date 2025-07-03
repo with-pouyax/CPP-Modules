@@ -32,7 +32,11 @@ Span::~Span() {}
 void Span::addNumber(int number) {
     if (_numbers.size() >= _maxSize)
         throw SpanFullException();
-    _numbers.push_back(number); // add the number to the end of the vector
+    try {
+        _numbers.push_back(number); // add the number to the end of the vector
+    } catch (const std::bad_alloc&) {
+        throw MemoryAllocationException();
+    }
 }
 
 unsigned int Span::shortestSpan() const {
@@ -83,4 +87,8 @@ const char* Span::InvalidSizeException::what() const throw() {
 
 const char* Span::DefaultConstructionException::what() const throw() {
     return "Default construction of Span is not allowed";
+}
+
+const char* Span::MemoryAllocationException::what() const throw() {
+    return "Memory allocation failed";
 } 

@@ -53,6 +53,11 @@ public:
     public:
         virtual const char* what() const throw();
     };
+
+    class MemoryAllocationException : public std::exception { // Exception for memory allocation failure
+    public:
+        virtual const char* what() const throw();
+    };
     // ==========================================================================
 };
 
@@ -90,7 +95,11 @@ void Span::addRange(Iterator begin, Iterator end) { // both begin and end are it
 
         // If we get here, the range is valid, so we can safely insert
         while (begin != end) {
-            _numbers.push_back(*begin);
+            try {
+                _numbers.push_back(*begin);
+            } catch (const std::bad_alloc&) {
+                throw MemoryAllocationException();
+            }
             ++begin; //  we already pushed the value to the vector, so we can pre-increment the begin iterator
         }
     } catch (const std::exception&) {
