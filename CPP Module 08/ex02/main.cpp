@@ -33,8 +33,8 @@ void testBasicOperations()
     mstack.push(17);
     
     // Test top and pop
-    std::cout << "Top element: " << mstack.top() << std::endl;
-    mstack.pop();
+    std::cout << "Top element: " << mstack.top() << std::endl; //most recent element
+    mstack.pop(); // remove from the top of the stack
     std::cout << "Size after pop: " << mstack.size() << std::endl;
     
     // Push more elements
@@ -61,8 +61,8 @@ void testIteration()
     mstack.push(0);
     
     std::cout << "Stack elements (using iterator):" << std::endl;
-    MutantStack<int>::iterator it = mstack.begin();
-    MutantStack<int>::iterator ite = mstack.end();
+    MutantStack<int>::iterator it = mstack.begin(); // save the beginning of the stack to it
+    MutantStack<int>::iterator ite = mstack.end(); // save the end of the stack to ite
     
     // Test iterator increment/decrement
     std::cout << "Testing iterator operations:" << std::endl;
