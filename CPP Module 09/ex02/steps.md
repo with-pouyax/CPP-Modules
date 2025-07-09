@@ -54,6 +54,8 @@
   - Put the larger element in `larger` container
   - Put the smaller element in `smaller` container
 - **Handle odd-sized containers:** If container has odd number of elements, the last unpaired element goes to `larger` container
+- **Important:** With odd-sized containers, `larger` will have one more element than `smaller`
+- **Example:** Container [1,2,3,4,5] → larger=[2,4,5], smaller=[1,3] (5 is unpaired)
 - **Maintain pair relationships:** From now on, `smaller[i]` is always the pair of `larger[i]` (same index = same pair)
 
 ### Step 2: Jacobstahl Sequence Calculation
@@ -68,12 +70,21 @@
 - **Critical:** Mirror all movements in `smaller` container to maintain pair relationships
 - **Whenever you move an element in `larger` container, move the corresponding element at the same index in `smaller` container**
 - **This ensures `smaller[i]` always remains the pair of `larger[i]` throughout the entire sorting process**
+(
+    *******************problem********************************
+- **Important:** With odd-sized containers, `larger` has one more element than `smaller`
+- **Solution:** Only mirror movements for indices that exist in both containers (0 to smaller.size()-1)
+- **The unpaired element (larger[larger.size()-1]) participates in sorting** - it gets sorted along with other larger elements
+- **The unpaired element moves independently** - no corresponding element in smaller to mirror, but it still gets sorted
+- **This ensures `smaller[i]` always remains the pair of `larger[i]` for valid indices**
+
+)
 - **Count comparisons:** Increment comparison counter for every comparison between two elements (`<`, `>`, `==`)
 - Continue recursion until `larger` container has 1 element
 
 ### Step 4: Binary Insertion Phase
 - **First: Insert smaller[0] (with 0 comparisons)** - this element can be inserted without any comparisons since we know it's smaller than its pair (larger[0])
-- Use Jacobstahl sequence to determine insertion order for remaining elements
+- **Use the pre-calculated Jacobstahl sequence** (stored in std::vector<int> from Step 2) to determine insertion order for remaining elements
 - **Note:** Index 0 is NOT in the Jacobstahl sequence - the first element (smaller[0]) gets special treatment
 - **Start with first Jacobstahl number (index 1)** - this is the first element to insert from the sequence
 - **Since smaller[i] is always the pair of larger[i], we can directly access smaller[jacobstahl_index]**
@@ -82,6 +93,7 @@
 - **Continue through the entire Jacobstahl sequence** - don't stop when encountering invalid indices, keep going to find valid ones
 - Insert that element into `larger` container using binary insertion sort
 - **Do not move or modify the `smaller` container during binary insertion sort; we only read its elements by their original index.**
+- **Handle odd-sized containers:** After inserting all smaller elements, the unpaired element (larger[larger.size()-1]) is already in its correct position
 - Binary insertion should be iterative, not recursive
 - **Count comparisons:** Increment comparison counter for every comparison between two elements (`<`, `>`, `==`)
 
