@@ -4,18 +4,25 @@
 
 #include "PmergeMe.hpp"
 #include <algorithm>   // std::swap
+#include <iostream>
 
 /*-- static data --*/
 std::size_t PmergeMe::_cmp      = 0;
 std::size_t PmergeMe::_idSource = 0;
 
 /*-- small utilities --*/
-bool PmergeMe::less(const Node& a,const Node& b)
+bool PmergeMe::less(const Node& a, const Node& b)
 {
-    ++_cmp;
-    if (a.value != b.value) return a.value < b.value;
-    return a.id < b.id;
+	std::cout << "Comparing: " << a.value << " vs " << b.value << '\n';
+
+    if (a.value != b.value)          // value comparison (counts!)
+    {
+        ++_cmp;
+        return a.value < b.value;
+    }
+    return a.id < b.id;              // tie-break (does NOT count)
 }
+
 std::size_t PmergeMe::comparisons()      { return _cmp; }
 void        PmergeMe::resetComparisons() { _cmp = 0; }
 double      PmergeMe::us(clock_t s,clock_t e)
@@ -260,23 +267,33 @@ std::size_t PmergeMe::binInsertRange(NodeDeq& c,const Node& e,
     return lo;
 }
 
-std::vector<std::size_t> PmergeMe::generateJacobsthal(std::size_t n) const
-{
-    std::vector<std::size_t> out;
-    if(n==0) return out;
-    std::vector<std::size_t> j;
-    j.push_back(1);
-    j.push_back(1);
-    while(j.back()<n) j.push_back(j.back()+2*j[j.size()-2]);
+std::vector<std::size_t> PmergeMe::generateJacobsthal(std::size_t n) const {
+	std::vector<std::size_t> jseq;
+	if (n == 0) return jseq;
 
-    std::vector<bool> ins(n,false);
-    for(std::size_t i=1;i<j.size();++i){
-        std::size_t end= std::min(j[i],n);
-        std::size_t start=(i==1)?1:j[i-1]+1;
-        for(std::size_t p=end;p>0&&p>=start;--p)
-            if(!ins[p-1]){ out.push_back(p-1); ins[p-1]=true; }
-        if(end>=n) break;
-    }
-    for(std::size_t i=0;i<n;++i) if(!ins[i]) out.push_back(i);
-    return out;
+	// Generate Jacobsthal numbers up to > n
+	std::vector<std::size_t> jacob;
+	jacob.push_back(0); // not used
+	jacob.push_back(1);
+	while (jacob.back() < n)
+		jacob.push_back(jacob.back() + 2 * jacob[jacob.size() - 2]);
+
+	std::vector<bool> used(n, false);
+	for (std::size_t i = jacob.size() - 1; i > 0; --i)
+	{
+		std::size_t idx = jacob[i];
+		if (idx - 1 < n && !used[idx - 1]) {
+			jseq.push_back(idx - 1);
+			used[idx - 1] = true;
+		}
+	}
+
+	// Add remaining indices
+	for (std::size_t i = 0; i < n; ++i)
+		if (!used[i])
+			jseq.push_back(i);
+
+	return jseq;
 }
+
+

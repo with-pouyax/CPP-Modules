@@ -28,6 +28,7 @@ public:
     static double      us(clock_t s, clock_t e);
 
 private:
+	
     /*-- internal node with stable id --*/
     struct Node
     {
