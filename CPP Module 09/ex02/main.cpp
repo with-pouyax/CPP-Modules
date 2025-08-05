@@ -42,32 +42,33 @@ int main(int ac, char **av)
     std::vector<int> v;
     std::deque<int>  d;
 
-    for (int i = 1; i < ac; ++i)
+    for (int i = 1; i < ac; ++i) // we loop through the arguments starting from 1 because the first argument is the program name
     {
         int val;
-        if (!parseInt(av[i], val))
+        if (!parseInt(av[i], val)) // we parse the arguments to integers
         {
             std::cerr << "Error\n";
             return 1;
         }
+        // we push the arguments to the vector and the deque
         v.push_back(val);
         d.push_back(val);
     }
 
-    std::cout << "Before:";
+    std::cout << "Before:"; // we print the vector and the deque before sorting
     for (std::size_t i = 0; i < v.size(); ++i)
         std::cout << ' ' << v[i];
     std::cout << '\n';
 
-    PmergeMe sorter;
+    PmergeMe sorter; // we create a PmergeMe object to sort the vector and the deque
 
     /* ---- vector ---- */
-    PmergeMe::resetComparisons();
-    clock_t vStart = std::clock();
-    sorter.sortVector(v);
-    clock_t vEnd   = std::clock();
-    double vTimeUs = PmergeMe::us(vStart, vEnd);
-    std::size_t vCmp = PmergeMe::comparisons();
+    PmergeMe::resetComparisons(); // we reset the comparisons before sorting
+    clock_t vStart = std::clock(); // we start the clock before sorting
+    sorter.sortVector(v); // we sort the vector
+    clock_t vEnd   = std::clock(); // we stop the clock after sorting
+    double vTimeUs = PmergeMe::us(vStart, vEnd); // we calculate the time it took to sort the vector
+    std::size_t vCmp = PmergeMe::comparisons(); // we get the number of comparisons
 
     /* ---- deque ---- */
     PmergeMe::resetComparisons();
