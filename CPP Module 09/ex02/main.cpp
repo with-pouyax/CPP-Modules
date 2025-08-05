@@ -62,6 +62,9 @@ int main(int ac, char **av)
 
     PmergeMe sorter; // we create a PmergeMe object to sort the vector and the deque
 
+    // To enable debug output, uncomment the next line:
+     PmergeMe::enableDebug(true);
+
     /* ---- vector ---- */
     PmergeMe::resetComparisons(); // we reset the comparisons before sorting
     clock_t vStart = std::clock(); // we start the clock before sorting

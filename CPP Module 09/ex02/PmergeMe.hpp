@@ -9,6 +9,8 @@
 #include <deque>
 #include <cstddef>
 #include <ctime>
+#include <string>
+#include <iostream>
 
 class PmergeMe
 {
@@ -26,6 +28,10 @@ public:
     static std::size_t comparisons();
     static void resetComparisons();
     static double us(clock_t s, clock_t e);
+    
+    // ==================== DEBUG CONTROL ====================
+    static void enableDebug(bool enable = true);
+    static bool isDebugEnabled();
 
 private:
     // ==================== INTERNAL TYPES ====================
@@ -40,6 +46,16 @@ private:
     typedef std::vector<Node> NodeVec;
     typedef std::deque<Node> NodeDeq;
     typedef std::vector<std::pair<std::size_t, std::size_t> > PairVec;
+
+    // ==================== DEBUG UTILITY FUNCTIONS ====================
+    static void printIndent();
+    static void printSectionHeader(const std::string& title);
+    static void printSubHeader(const std::string& title);
+    static void printSubFooter();
+    static void printContainer(const std::string& name, const std::vector<int>& v);
+    static void printNodeContainer(const std::string& name, const NodeVec& v);
+    static void printNodeContainer(const std::string& name, const NodeDeq& v);
+    static void printPairContainer(const std::string& name, const PairVec& v);
 
     // ==================== FORD-JOHNSON ALGORITHM DRIVERS ====================
     void fordJohnsonVec(NodeVec& seq);
@@ -95,6 +111,8 @@ private:
     // ==================== STATIC STATE ====================
     static std::size_t _cmp;       // Global comparison counter
     static std::size_t _idSource;  // Unique id generator
+    static int _debug_depth;       // Track recursion depth
+    static bool _debug_enabled;    // Debug output control
 };
 
 #endif /* PMERGEME_HPP */
