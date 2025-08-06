@@ -56,6 +56,14 @@ bool PmergeMe::isDebugEnabled() { return _debug_enabled; }
 std::size_t PmergeMe::comparisons() { return _cmp; }
 void        PmergeMe::resetComparisons() { _cmp = 0; }
 
+// Add method to clear leftovers
+void PmergeMe::clearLeftovers() { _leftovers.clear(); }
+
+// Add method to get leftovers
+const std::vector< std::pair<int, std::vector<int> > >& PmergeMe::getLeftovers() const {
+    return _leftovers;
+}
+
 double PmergeMe::us(clock_t s, clock_t e) {
     return static_cast<double>(e - s) * 1e6 / CLOCKS_PER_SEC;
 }
@@ -85,6 +93,9 @@ void PmergeMe::sortVector(std::vector<int>& v)
         std::cout << '\n';
     }
 
+    // Clear any previous leftovers
+    _leftovers.clear();
+
     // ----- Depth 0: make sorted pairs from input -----
     std::vector< std::vector<int> > pairs;
     pairs.reserve(v.size() / 2);
@@ -104,6 +115,13 @@ void PmergeMe::sortVector(std::vector<int>& v)
 
     bool hasLeftover0 = (v.size() % 2) != 0;
     int  leftover0    = hasLeftover0 ? v.back() : 0;
+
+    // Store depth 0 leftover
+    if (hasLeftover0) {
+        std::vector<int> leftoverVec;
+        leftoverVec.push_back(leftover0);
+        _leftovers.push_back(std::make_pair(0, leftoverVec));
+    }
 
     if (_debug_enabled) {
         std::cout << "[Depth 0] Pairs: ";
@@ -185,7 +203,11 @@ void PmergeMe::sortVector(std::vector<int>& v)
 
         bool hasLeftover = (curr.size() % 2) != 0;
         std::vector<int> leftoverGroup;
-        if (hasLeftover) leftoverGroup = curr.back();
+        if (hasLeftover) {
+            leftoverGroup = curr.back();
+            // Store leftover at this depth
+            _leftovers.push_back(std::make_pair(depth, leftoverGroup));
+        }
 
         if (_debug_enabled) {
             if (depth == 1)
@@ -228,6 +250,58 @@ void PmergeMe::sortVector(std::vector<int>& v)
         std::cout << "[Depth " << depth << "] Baseline reached\n";
     }
 
+    // Call recursive function to go back through depths with leftovers
+    if (!curr.empty()) {
+        _mergeInsertionPhase(curr[0], depth - 1);
+    }
+
     // NOTE: Phase 1 does not reorder 'v'. Later phases would use the grouping to
     // do the merge-insertion; here we stop after producing/printing the groups.
+}
+
+void PmergeMe::_mergeInsertionPhase(const std::vector<int>& container, int depth) {
+    if (_debug_enabled) {
+        std::cout << "[Depth " << depth << "] Merge-insertion phase with container: ";
+        printGroupList(std::vector< std::vector<int> >(1, container));
+        std::cout << '\n';
+    }
+
+    // Find leftover for this depth
+    std::vector<int> leftoverForDepth;
+    for (std::size_t i = 0; i < _leftovers.size(); ++i) {
+        if (_leftovers[i].first == depth) {
+            leftoverForDepth = _leftovers[i].second;
+            break;
+        }
+    }
+
+    if (!leftoverForDepth.empty()) {
+        if (_debug_enabled) {
+            std::cout << "[Depth " << depth << "] Adding leftover: ";
+            if (depth == 0) {
+                // For depth 0, leftover is a single element, not a pair
+                std::cout << "[" << leftoverForDepth[0] << "]";
+            } else {
+                printGroupList(std::vector< std::vector<int> >(1, leftoverForDepth));
+            }
+            std::cout << '\n';
+        }
+    } else {
+        if (_debug_enabled) {
+            std::cout << "[Depth " << depth << "] No leftover for this depth\n";
+        }
+    }
+
+
+
+    // If we're at depth 0, we're done
+    if (depth <= 0) {
+        if (_debug_enabled) {
+            std::cout << "[Depth " << depth << "] Reached depth 0, merge-insertion complete\n";
+        }
+        return;
+    }
+
+    // Recursively call for next depth down
+    _mergeInsertionPhase(container, depth - 1);
 }

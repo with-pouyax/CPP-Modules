@@ -31,10 +31,20 @@ public:
     static void enableDebug(bool enable = true);
     static bool isDebugEnabled();
 
+    // ==================== LEFTOVER MANAGEMENT ====================
+    void clearLeftovers();
+    const std::vector< std::pair<int, std::vector<int> > >& getLeftovers() const;
+
 private:
     // ==================== STATIC STATE ====================
     static std::size_t _cmp;       // Global comparison counter
     static bool _debug_enabled;    // Debug output control
+    
+    // ==================== INSTANCE STATE ====================
+    std::vector< std::pair<int, std::vector<int> > > _leftovers; // depth -> leftover elements
+    
+    // ==================== MERGE-INSERTION PHASE ====================
+    void _mergeInsertionPhase(const std::vector<int>& container, int depth);
 };
 
 #endif /* PMERGEME_HPP */
