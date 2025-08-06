@@ -761,67 +761,39 @@ std::size_t PmergeMe::binaryInsert(NodeDeq& chain, const Node& elem,
     return low;
 }
 
+
+
 std::vector<std::size_t> PmergeMe::generateJacobsthalOrder(std::size_t n) const
 {
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[DATA] generateJacobsthalOrder called with n=" << n << std::endl;
-    }
-    
     std::vector<std::size_t> order;
-    if (n == 0)
-        return order;
+    if (n == 0) return order;
 
-    // Generate Jacobsthal numbers: J(n) = J(n-1) + 2*J(n-2)
-    std::vector<std::size_t> jacobsthal;
-    jacobsthal.push_back(0);  // J(0) = 0
-    jacobsthal.push_back(1);  // J(1) = 1
-    
-    while (jacobsthal.back() < n)
-        jacobsthal.push_back(jacobsthal.back() + 2 * jacobsthal[jacobsthal.size() - 2]);
+    // Jacobsthal numbers J(0)=0, J(1)=1, J(k)=J(k-1)+2*J(k-2)
+    std::vector<std::size_t> J; 
+    J.push_back(0); 
+    J.push_back(1);
+    while (J.back() < n) 
+        J.push_back(J.back() + 2 * J[J.size() - 2]);
 
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[DATA] Jacobsthal numbers: [";
-        for (size_t i = 0; i < jacobsthal.size(); ++i) {
-            if (i > 0) std::cout << ", ";
-            std::cout << jacobsthal[i];
-        }
-        std::cout << "]" << std::endl;
-    }
+    // Find k with J[k] < = n <= J[k+1]
+    std::size_t k = J.size() - 2; // because J.back() >= n
 
-    // Ford-Johnson insertion order: use Jacobsthal numbers as insertion points
     std::vector<bool> used(n, false);
-    
-    // Start with the largest Jacobsthal number that fits
-    for (std::size_t i = jacobsthal.size() - 1; i > 0; --i)
-    {
-        std::size_t idx = jacobsthal[i] - 1;  // Convert to 0-based index
-        if (idx < n && !used[idx])
-        {
-            order.push_back(idx);
-            used[idx] = true;
+    // Insert in DESCENDING blocks: from min(J(t+1)-1, n-1) down to J(t)-1
+    for (std::size_t t = k; t >= 1; --t) {
+        std::size_t upper = std::min(n - 1, J[t + 1] - 1);
+        std::size_t lower = (J[t] == 0) ? 0 : J[t] - 1;
+
+        for (std::size_t i = upper + 1; i-- > lower; ) {
+            if (i < n && !used[i]) { order.push_back(i); used[i] = true; }
+            if (i == 0) break; // prevent size_t underflow
         }
-    }
-    
-    // Add remaining indices in order
-    for (std::size_t i = 0; i < n; ++i)
-    {
-        if (!used[i])
-            order.push_back(i);
+        if (t == 1) break;
     }
 
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[DATA] Generated order: [";
-        for (size_t i = 0; i < order.size(); ++i) {
-            if (i > 0) std::cout << ", ";
-            std::cout << order[i];
-        }
-        std::cout << "]" << std::endl;
-    }
-    
+    // Safety: append any indices not yet used (should be none except possibly 0)
+    for (std::size_t i = n; i-- > 0; )
+        if (!used[i]) order.push_back(i);
+
     return order;
 }
-
-
