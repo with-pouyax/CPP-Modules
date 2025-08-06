@@ -40,7 +40,6 @@ int main(int ac, char **av)
     }
 
     std::vector<int> v;
-    std::deque<int>  d;
 
     for (int i = 1; i < ac; ++i) // we loop through the arguments starting from 1 because the first argument is the program name
     {
@@ -50,17 +49,16 @@ int main(int ac, char **av)
             std::cerr << "Error\n";
             return 1;
         }
-        // we push the arguments to the vector and the deque
+        // we push the arguments to the vector
         v.push_back(val);
-        d.push_back(val);
     }
 
-    std::cout << "Before:"; // we print the vector and the deque before sorting
+    std::cout << "Before:"; // we print the vector before sorting
     for (std::size_t i = 0; i < v.size(); ++i)
         std::cout << ' ' << v[i];
     std::cout << '\n';
 
-    PmergeMe sorter; // we create a PmergeMe object to sort the vector and the deque
+    PmergeMe sorter; // we create a PmergeMe object to sort the vector
 
     // To enable debug output, uncomment the next line:
      PmergeMe::enableDebug(true);
@@ -73,14 +71,6 @@ int main(int ac, char **av)
     double vTimeUs = PmergeMe::us(vStart, vEnd); // we calculate the time it took to sort the vector
     std::size_t vCmp = PmergeMe::comparisons(); // we get the number of comparisons
 
-    /* ---- deque ---- */
-    PmergeMe::resetComparisons();
-    clock_t dStart = std::clock();
-    sorter.sortDeque(d);
-    clock_t dEnd   = std::clock();
-    double dTimeUs = PmergeMe::us(dStart, dEnd);
-    std::size_t dCmp = PmergeMe::comparisons();
-
     std::cout << "After:";
     for (std::size_t i = 0; i < v.size(); ++i)
         std::cout << ' ' << v[i];
@@ -90,11 +80,6 @@ int main(int ac, char **av)
               << " elements with std::vector : "
               << std::fixed << std::setprecision(6) << vTimeUs << " us"
               << " | comparisons: " << vCmp << '\n';
-
-    std::cout << "Time to process a range of " << d.size()
-              << " elements with std::deque  : "
-              << std::fixed << std::setprecision(6) << dTimeUs << " us"
-              << " | comparisons: " << dCmp << '\n';
 
     return 0;
 }

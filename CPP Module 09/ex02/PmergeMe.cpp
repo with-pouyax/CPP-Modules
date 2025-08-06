@@ -73,17 +73,6 @@ void PmergeMe::printNodeContainer(const std::string& name, const NodeVec& v) {
     std::cout << "]" << std::endl;
 }
 
-void PmergeMe::printNodeContainer(const std::string& name, const NodeDeq& v) {
-    if (!_debug_enabled) return;
-    printIndent();
-    std::cout << "[NUM] " << name << ": [";
-    for (size_t i = 0; i < v.size(); ++i) {
-        if (i > 0) std::cout << ", ";
-        std::cout << v[i].value << "(" << v[i].id << ")";
-    }
-    std::cout << "]" << std::endl;
-}
-
 void PmergeMe::printPairContainer(const std::string& name, const PairVec& v) {
     if (!_debug_enabled) return;
     printIndent();
@@ -98,16 +87,15 @@ void PmergeMe::printPairContainer(const std::string& name, const PairVec& v) {
 // ==================== UTILITY FUNCTIONS ====================
 bool PmergeMe::less(const Node& a, const Node& b)
 {
-    if (_debug_enabled) {
-        printIndent();
-        //std::cout << "[COMPARE] Comparing: " << a.value << " vs " << b.value << std::endl;
-    }
-
-    ++_cmp;  // Count every comparison
-    if (a.value != b.value)
+    // Count only the key (value) comparison.
+    if (a.value != b.value) {
+        ++_cmp;
         return a.value < b.value;
-    return a.id < b.id;              // Tie-break
+    }
+    // Equal values: tie-break by id (deterministic), but don't count it.
+    return a.id < b.id;
 }
+
 
 std::size_t PmergeMe::comparisons()
 {
@@ -161,28 +149,6 @@ void PmergeMe::sortVector(std::vector<int>& v)
     if (_debug_enabled) {
         printIndent();
         std::cout << "[OK] Vector sorting completed" << std::endl;
-    }
-}
-
-void PmergeMe::sortDeque(std::deque<int>& d)
-{
-    if (_debug_enabled) {
-        printSectionHeader("SORT DEQUE");
-    }
-    
-    NodeDeq nodes;
-    
-    for (std::size_t i = 0; i < d.size(); ++i)
-        nodes.push_back(Node(d[i], _idSource++));
-    
-    fordJohnsonDeq(nodes);
-    
-    for (std::size_t i = 0; i < d.size(); ++i)
-        d[i] = nodes[i].value;
-    
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[OK] Deque sorting completed" << std::endl;
     }
 }
 
@@ -303,80 +269,6 @@ void PmergeMe::fordJohnsonVec(NodeVec& seq)
     if (_debug_enabled) printSubFooter();
 }
 
-// ==================== FORD-JOHNSON ALGORITHM (DEQUE) ====================
-void PmergeMe::fordJohnsonDeq(NodeDeq& seq)
-{
-    ++_debug_depth;
-    if (_debug_enabled) {
-        {
-            char depth_str[32];
-            sprintf(depth_str, "%d", _debug_depth);
-            printSubHeader(std::string("FORD-JOHNSON DEQUE (Depth ") + depth_str + ")");
-        }
-    }
-    
-    const std::size_t n = seq.size();
-    
-    if (n <= 1) {
-        if (_debug_enabled) {
-            printIndent();
-            std::cout << "[STOP] Base case: n <= 1, returning" << std::endl;
-        }
-        --_debug_depth;
-        if (_debug_enabled) printSubFooter();
-        return;
-    }
-    if (n == 2)
-    {
-        if (_debug_enabled) {
-            printIndent();
-            std::cout << "[LOOP] Base case: n == 2, comparing and swapping if needed" << std::endl;
-        }
-        if (less(seq[1], seq[0]))
-            std::swap(seq[0], seq[1]);
-        --_debug_depth;
-        if (_debug_enabled) printSubFooter();
-        return;
-    }
-
-    NodeDeq smaller, larger;
-    PairVec pairs;
-    
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[LOOP] Calling pairAndSplit..." << std::endl;
-    }
-    pairAndSplit(seq, smaller, larger, pairs);
-
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[DATA] After pairAndSplit:" << std::endl;
-        printIndent();
-        std::cout << "   smaller size: " << smaller.size() << ", larger size: " << larger.size() << ", pairs size: " << pairs.size() << std::endl;
-    }
-
-    fordJohnsonDeq(larger);           // Recursion on larger half
-
-    NodeDeq chain;
-    std::size_t firstSmallId = 0;
-    
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "🔗 Calling buildMainChain..." << std::endl;
-    }
-    buildMainChain(chain, smaller, larger, pairs, firstSmallId);
-    
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "🔗 Calling insertRemaining..." << std::endl;
-    }
-    insertRemaining(chain, smaller, pairs, firstSmallId);
-
-    seq.swap(chain);
-    --_debug_depth;
-    if (_debug_enabled) printSubFooter();
-}
-
 // ==================== PHASE 1: PAIR & SPLIT ====================
 void PmergeMe::pairAndSplit(const NodeVec& input,
                             NodeVec& smaller, NodeVec& larger, PairVec& pairs)
@@ -433,31 +325,6 @@ void PmergeMe::pairAndSplit(const NodeVec& input,
         printPairContainer("pairs", pairs);
         printSubFooter();
     }
-}
-
-void PmergeMe::pairAndSplit(const NodeDeq& input,
-                            NodeDeq& smaller, NodeDeq& larger, PairVec& pairs)
-{
-    if (_debug_enabled) {
-        printSubHeader("PAIR AND SPLIT (DEQUE)");
-    }
-    
-    const std::size_t pairCount = input.size() / 2;
-    
-    for (std::size_t i = 0; i < pairCount; ++i)
-    {
-        Node a = input[2 * i], b = input[2 * i + 1];
-        if (less(b, a))
-            std::swap(a, b);
-        smaller.push_back(a);
-        larger.push_back(b);
-        pairs.push_back(std::make_pair(a.id, b.id));
-    }
-    
-    if (input.size() % 2)
-        smaller.push_back(input.back());
-    
-    if (_debug_enabled) printSubFooter();
 }
 
 // ==================== PHASE 2: MAIN CHAIN ====================
@@ -519,194 +386,128 @@ void PmergeMe::buildMainChain(NodeVec& chain,
     }
 }
 
-void PmergeMe::buildMainChain(NodeDeq& chain,
-                              const NodeDeq& smaller, const NodeDeq& larger,
-                              const PairVec& pairs,
-                              std::size_t& firstSmallId)
-{
-    if (_debug_enabled) {
-        printSubHeader("BUILD MAIN CHAIN (DEQUE)");
-    }
-    
-    const std::size_t firstLargeId = larger[0].id;
-    for (std::size_t i = 0; i < pairs.size(); ++i)
-    {
-        if (pairs[i].second == firstLargeId)
-        {
-            firstSmallId = pairs[i].first;
-            break;
-        }
-    }
-
-    for (std::size_t i = 0; i < smaller.size(); ++i)
-    {
-        if (smaller[i].id == firstSmallId)
-        {
-            chain.push_back(smaller[i]);
-            break;
-        }
-    }
-
-    chain.insert(chain.end(), larger.begin(), larger.end());
-    
-    if (_debug_enabled) printSubFooter();
-}
-
 // ==================== PHASE 3: REMAINING INSERTS ====================
 void PmergeMe::insertRemaining(NodeVec& chain,
-                               const NodeVec& smaller, const PairVec& pairs,
-                               std::size_t firstSmallId)
+    const NodeVec& smaller, const PairVec& pairs,
+    std::size_t firstSmallId)
 {
-    if (_debug_enabled) {
-        printSubHeader("INSERT REMAINING");
-        printNodeContainer("chain (before)", chain);
-        printNodeContainer("smaller", smaller);
-        printPairContainer("pairs", pairs);
-        printIndent();
-        std::cout << "[TARGET] firstSmallId: " << firstSmallId << std::endl;
-    }
-    
-    // Gather the smalls that still need to be inserted
-    NodeVec remaining;
-    remaining.reserve(smaller.size());
-    
-    for (std::size_t i = 0; i < smaller.size(); ++i)
-    {
-        if (smaller[i].id != firstSmallId)
-            remaining.push_back(smaller[i]);
-    }
-
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[LIST] remaining elements to insert:" << std::endl;
-        printNodeContainer("remaining", remaining);
-    }
-
-    if (remaining.empty()) {
-        if (_debug_enabled) {
-            printIndent();
-            std::cout << "[OK] No remaining elements to insert" << std::endl;
-            printSubFooter();
-        }
-        return;
-    }
-
-    // Ford-Johnson insertion order
-    std::vector<std::size_t> order = generateJacobsthalOrder(remaining.size());
-    if (_debug_enabled) {
-        printIndent();
-        std::cout << "[DATA] Jacobsthal insertion order: [";
-        for (size_t i = 0; i < order.size(); ++i) {
-            if (i > 0) std::cout << ", ";
-            std::cout << order[i];
-        }
-        std::cout << "]" << std::endl;
-    }
-
-    for (std::size_t k = 0; k < order.size(); ++k)
-    {
-        std::size_t idx = order[k];
-        if (idx >= remaining.size())
-            continue;
-            
-        const Node& elem = remaining[idx];
-        if (_debug_enabled) {
-            printIndent();
-            std::cout << "[LOOP] Inserting element " << elem.value << "(" << elem.id << ") at index " << idx << std::endl;
-        }
-
-        // Find the paired larger element to determine optimal search bounds
-        std::size_t pairedPos = chain.size();
-        for (std::size_t p = 0; p < pairs.size(); ++p)
-        {
-            if (pairs[p].first == elem.id)
-            {
-                pairedPos = findId(chain, pairs[p].second);
-                if (_debug_enabled) {
-                    printIndent();
-                    std::cout << "[TARGET] Found paired element at position " << pairedPos << std::endl;
-                }
-                break;
-            }
-        }
-
-        // Ford-Johnson optimal insertion: use the position of paired element as upper bound
-        std::size_t high = (pairedPos != chain.size()) ? pairedPos : chain.size();
-        if (_debug_enabled) {
-            printIndent();
-            std::cout << "[SEARCH] Binary insert with bounds: low=0, high=" << high << std::endl;
-        }
-        binaryInsert(chain, elem, 0, high);
-        
-        if (_debug_enabled) {
-            printIndent();
-            std::cout << "[OK] Chain after insertion:" << std::endl;
-            printNodeContainer("chain", chain);
-        }
-    }
-    
-    if (_debug_enabled) printSubFooter();
+if (_debug_enabled) {
+printSubHeader("INSERT REMAINING");
+printNodeContainer("chain (before)", chain);
+printNodeContainer("smaller", smaller);
+printPairContainer("pairs", pairs);
+printIndent();
+std::cout << "[TARGET] firstSmallId: " << firstSmallId << std::endl;
 }
 
-void PmergeMe::insertRemaining(NodeDeq& chain,
-                               const NodeDeq& smaller, const PairVec& pairs,
-                               std::size_t firstSmallId)
+// 1) Collect remaining smalls (exclude the one already placed first)
+NodeVec remaining;
+remaining.reserve(smaller.size());
+for (std::size_t i = 0; i < smaller.size(); ++i)
+if (smaller[i].id != firstSmallId)
+remaining.push_back(smaller[i]);
+
+if (_debug_enabled) {
+printIndent();
+std::cout << "[LIST] remaining elements to insert:" << std::endl;
+printNodeContainer("remaining", remaining);
+}
+if (remaining.empty()) { if (_debug_enabled) printSubFooter(); return; }
+
+// 2) Build a fast test: which small IDs are paired?
+//    (paired small ids are the 'first' components in pairs)
+std::vector<std::size_t> pairedSmallIds;
+pairedSmallIds.reserve(pairs.size());
+for (std::size_t p = 0; p < pairs.size(); ++p)
+pairedSmallIds.push_back(pairs[p].first);
+
+
+
+// 3) Split 'remaining' into: indices of paired smalls, and the (optional) odd index
+std::vector<std::size_t> pairedIdx; pairedIdx.reserve(remaining.size());
+std::size_t oddIdx = static_cast<std::size_t>(-1);
+for (std::size_t i = 0; i < remaining.size(); ++i) {
+if (containsId(pairedSmallIds, remaining[i].id))
+pairedIdx.push_back(i);
+else
+oddIdx = i; // there can be at most one odd
+}
+const bool hasOdd = (oddIdx != static_cast<std::size_t>(-1));
+
+// 4) Jacobsthal order ONLY over the paired positions (0..pairedIdx.size()-1),
+//    then map back to 'remaining' via pairedIdx[]
+std::vector<std::size_t> base = generateJacobsthalOrder(pairedIdx.size());
+
+std::vector<std::size_t> finalOrder; finalOrder.reserve(remaining.size());
+if (!base.empty()) {
+// First Jacobsthal element
+finalOrder.push_back(pairedIdx[base[0]]);
+// Then the odd (if it exists)
+if (hasOdd) finalOrder.push_back(oddIdx);
+// Then the rest of Jacobsthal over paired
+for (std::size_t k = 1; k < base.size(); ++k)
+finalOrder.push_back(pairedIdx[base[k]]);
+} else {
+// No paired left ⇒ only odd (or nothing)
+if (hasOdd) finalOrder.push_back(oddIdx);
+}
+
+if (_debug_enabled) {
+printIndent();
+std::cout << "[DATA] Insertion order (paired Jacobsthal + odd after first): [";
+for (std::size_t i = 0; i < finalOrder.size(); ++i) {
+if (i) std::cout << ", ";
+std::cout << finalOrder[i];
+}
+std::cout << "]" << std::endl;
+}
+
+// 5) Do the bounded binary inserts
+for (std::size_t step = 0; step < finalOrder.size(); ++step)
 {
-    if (_debug_enabled) {
-        printSubHeader("INSERT REMAINING (DEQUE)");
-    }
-    
-    NodeDeq remaining;
-    for (std::size_t i = 0; i < smaller.size(); ++i)
-    {
-        if (smaller[i].id != firstSmallId)
-            remaining.push_back(smaller[i]);
-    }
+std::size_t ridx = finalOrder[step];
+if (ridx >= remaining.size()) continue;
 
-    if (remaining.empty())
-        return;
+const Node& elem = remaining[ridx];
+if (_debug_enabled) {
+printIndent();
+std::cout << "[LOOP] Inserting element " << elem.value
+<< "(" << elem.id << ") from remaining index " << ridx << std::endl;
+}
 
-    std::vector<std::size_t> order = generateJacobsthalOrder(remaining.size());
+// Upper bound = position of its paired larger (if any); otherwise end
+std::size_t pairedPos = chain.size();
+for (std::size_t p = 0; p < pairs.size(); ++p) {
+if (pairs[p].first == elem.id) {
+pairedPos = findId(chain, pairs[p].second);
+if (_debug_enabled) {
+printIndent();
+std::cout << "[TARGET] Paired larger position = "
+   << (pairedPos == chain.size() ? -1 : (int)pairedPos)
+   << std::endl;
+}
+break;
+}
+}
+std::size_t high = (pairedPos != chain.size()) ? pairedPos : chain.size();
+if (_debug_enabled) {
+printIndent();
+std::cout << "[SEARCH] Binary insert bounds: [0, " << high << ")" << std::endl;
+}
+binaryInsert(chain, elem, 0, high);
 
-    for (std::size_t k = 0; k < order.size(); ++k)
-    {
-        std::size_t idx = order[k];
-        if (idx >= remaining.size())
-            continue;
-            
-        const Node& elem = remaining[idx];
+if (_debug_enabled) {
+printIndent();
+std::cout << "[OK] Chain after insertion:" << std::endl;
+printNodeContainer("chain", chain);
+}
+}
 
-        // Find the paired larger element to determine optimal search bounds
-        std::size_t pairedPos = chain.size();
-        for (std::size_t p = 0; p < pairs.size(); ++p)
-        {
-            if (pairs[p].first == elem.id)
-            {
-                pairedPos = findId(chain, pairs[p].second);
-                break;
-            }
-        }
-
-        // Ford-Johnson optimal insertion: use the position of paired element as upper bound
-        std::size_t high = (pairedPos != chain.size()) ? pairedPos : chain.size();
-        binaryInsert(chain, elem, 0, high);
-    }
-    
-    if (_debug_enabled) printSubFooter();
+if (_debug_enabled) printSubFooter();
 }
 
 // ==================== UTILITY FUNCTIONS ====================
 std::size_t PmergeMe::findId(const NodeVec& chain, std::size_t id) const
-{
-    for (std::size_t i = 0; i < chain.size(); ++i)
-    {
-        if (chain[i].id == id)
-            return i;
-    }
-    return chain.size();
-}
-
-std::size_t PmergeMe::findId(const NodeDeq& chain, std::size_t id) const
 {
     for (std::size_t i = 0; i < chain.size(); ++i)
     {
@@ -746,23 +547,6 @@ std::size_t PmergeMe::binaryInsert(NodeVec& chain, const Node& elem,
     return low;
 }
 
-std::size_t PmergeMe::binaryInsert(NodeDeq& chain, const Node& elem,
-                                   std::size_t low, std::size_t high)
-{
-    while (low < high)
-    {
-        std::size_t mid = (low + high) / 2;
-        if (less(elem, chain[mid]))
-            high = mid;
-        else
-            low = mid + 1;
-    }
-    chain.insert(chain.begin() + low, elem);
-    return low;
-}
-
-
-
 std::vector<std::size_t> PmergeMe::generateJacobsthalOrder(std::size_t n) const
 {
     std::vector<std::size_t> order;
@@ -796,4 +580,10 @@ std::vector<std::size_t> PmergeMe::generateJacobsthalOrder(std::size_t n) const
         if (!used[i]) order.push_back(i);
 
     return order;
+}
+
+bool PmergeMe::containsId(const std::vector<std::size_t>& vec, std::size_t id) {
+    for (std::size_t i = 0; i < vec.size(); ++i)
+        if (vec[i] == id) return true;
+    return false;
 }

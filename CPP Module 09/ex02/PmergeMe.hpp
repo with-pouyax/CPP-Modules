@@ -6,7 +6,6 @@
 #define PMERGEME_HPP
 
 #include <vector>
-#include <deque>
 #include <cstddef>
 #include <ctime>
 #include <string>
@@ -23,7 +22,6 @@ public:
 
     // ==================== PUBLIC API ====================
     void sortVector(std::vector<int>& v);
-    void sortDeque(std::deque<int>& d);
 
     static std::size_t comparisons();
     static void resetComparisons();
@@ -44,7 +42,6 @@ private:
     };
 
     typedef std::vector<Node> NodeVec;
-    typedef std::deque<Node> NodeDeq;
     typedef std::vector<std::pair<std::size_t, std::size_t> > PairVec;
 
     // ==================== DEBUG UTILITY FUNCTIONS ====================
@@ -54,12 +51,10 @@ private:
     static void printSubFooter();
     static void printContainer(const std::string& name, const std::vector<int>& v);
     static void printNodeContainer(const std::string& name, const NodeVec& v);
-    static void printNodeContainer(const std::string& name, const NodeDeq& v);
     static void printPairContainer(const std::string& name, const PairVec& v);
 
     // ==================== FORD-JOHNSON ALGORITHM DRIVERS ====================
     void fordJohnsonVec(NodeVec& seq);
-    void fordJohnsonDeq(NodeDeq& seq);
 
     // ==================== PHASE HELPERS (VECTOR) ====================
     void pairAndSplit(const NodeVec& input, 
@@ -78,35 +73,18 @@ private:
                          const PairVec& pairs,
                          std::size_t firstSmallId);
 
-    // ==================== PHASE HELPERS (DEQUE) ====================
-    void pairAndSplit(const NodeDeq& input, 
-                      NodeDeq& smaller, 
-                      NodeDeq& larger,
-                      PairVec& pairs);
-    
-    void buildMainChain(NodeDeq& chain,
-                        const NodeDeq& smaller, 
-                        const NodeDeq& larger,
-                        const PairVec& pairs,
-                        std::size_t& firstSmallId);
-    
-    void insertRemaining(NodeDeq& chain,
-                         const NodeDeq& smaller, 
-                         const PairVec& pairs,
-                         std::size_t firstSmallId);
-
     // ==================== UTILITY FUNCTIONS ====================
     static bool less(const Node& a, const Node& b);
     
     std::size_t findId(const NodeVec& chain, std::size_t id) const;
-    std::size_t findId(const NodeDeq& chain, std::size_t id) const;
     
     std::size_t binaryInsert(NodeVec& chain, const Node& elem,
                              std::size_t low, std::size_t high);
-    std::size_t binaryInsert(NodeDeq& chain, const Node& elem,
-                             std::size_t low, std::size_t high);
     
     std::vector<std::size_t> generateJacobsthalOrder(std::size_t n) const;
+    
+    // Helper function for checking if an id is in a vector
+    static bool containsId(const std::vector<std::size_t>& vec, std::size_t id);
 
     // ==================== STATIC STATE ====================
     static std::size_t _cmp;       // Global comparison counter
