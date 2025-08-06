@@ -18,9 +18,19 @@
 - Sequence: `9 8 3 1 7 6 4 2 5 10 3`
 - **Note**: This algorithm works with any number of inputs (even or odd)
 
-## Phase 1: Pairing and Sorting (Depth-based)
+## Phase 1: Recursive Pairing and Sorting (Depth-based)
 
-### Depth 0
+**Important**: Phase 1 continues recursively for any number of depths until reaching the baseline (when only one group remains). The number of depths depends on the input size and can be much larger than shown in this example.
+
+### Recursive Depth Process
+- **General Rule**: Continue pairing and sorting at each depth until only one group remains
+- **Baseline Condition**: When the number of groups at any depth becomes 1
+- **Depth Count**: Can be any number n depending on input size (log₂(n) approximately)
+- **Sorting Rule**: At each depth, compare the rightmost element of each group
+
+### Example with 11 elements (3 depths)
+
+#### Depth 0
 - **Step 1**: Pair consecutive integers from left to right
   - Input: `9 8 3 1 7 6 4 2 5 10 3`
   - Pairs: `[8, 9], [1, 3], [6, 7], [2, 4], [5, 10]`
@@ -33,7 +43,7 @@
     [Depth 0] Leftover: [3]
     ```
 
-### Depth 1
+#### Depth 1
 - **Step 2**: Pair consecutive pairs and sort them
   - **Sorting rule**: Compare the rightmost integer of each pair
   - Input pairs: `[8, 9], [1, 3], [6, 7], [2, 4], [5, 10]`
@@ -50,13 +60,12 @@
     [Depth 1] Comparisons: 2
     ```
 
-### Depth 2 (Baseline)
+#### Depth 2 (Baseline)
 - **Step 3**: Final pairing at baseline
   - Input: `[([1, 3], [8, 9]), ([2, 4], [6, 7])]`
   - Compare `([2, 4], [6, 7])` vs `([1, 3], [8, 9])` → `([2, 4], [6, 7])` comes first (7 < 9) [comparison #3]
   - Result: `[{([2, 4], [6, 7]), ([1, 3], [8, 9])}]`
-  - Baseline reached, start backtracking
-  - **General rule**: Continue pairing until only one group remains (baseline)
+  - **Baseline reached**: Only one group remains, start backtracking
   - **Debug output** (if enabled):
     ```
     [Depth 2] Input groups: [[1, 3], [8, 9]], [[2, 4], [6, 7]]
@@ -65,10 +74,50 @@
     [Depth 2] Comparisons: 1
     ```
 
-## Phase 2: Chain Reconstruction (Backtracking)
+### Larger Example: 15 elements (4 depths)
 
-### Depth 1 Chain Call
-- **Step 4**: Reconstruct from depth 1
+#### Depth 0
+- Input: `15 14 13 12 11 10 9 8 7 6 5 4 3 2 1`
+- Pairs: `[14, 15], [12, 13], [10, 11], [8, 9], [6, 7], [4, 5], [2, 3]`
+- Leftover: `[1]`
+
+#### Depth 1
+- Input pairs: `[14, 15], [12, 13], [10, 11], [8, 9], [6, 7], [4, 5], [2, 3]`
+- Sorted pairs: `[2, 3], [4, 5], [6, 7], [8, 9], [10, 11], [12, 13], [14, 15]`
+- Groups: `[([2, 3], [4, 5]), ([6, 7], [8, 9]), ([10, 11], [12, 13])]`
+- Leftover: `[14, 15]`
+
+#### Depth 2
+- Input groups: `[([2, 3], [4, 5]), ([6, 7], [8, 9]), ([10, 11], [12, 13])]`
+- Sorted groups: `[([2, 3], [4, 5]), ([6, 7], [8, 9]), ([10, 11], [12, 13])]`
+- Groups: `[([([2, 3], [4, 5]), ([6, 7], [8, 9])], [([10, 11], [12, 13])])]`
+- Leftover: `[14, 15]`
+
+#### Depth 3 (Baseline)
+- Input: `[([([2, 3], [4, 5]), ([6, 7], [8, 9])], [([10, 11], [12, 13])])]`
+- Compare and sort: `[([([2, 3], [4, 5]), ([6, 7], [8, 9])], [([10, 11], [12, 13])])]`
+- **Baseline reached**: Only one group remains
+
+### Recursive Implementation Strategy
+- **Base case**: When number of groups ≤ 1 (baseline reached)
+- **Recursive case**: Continue pairing and sorting at next depth
+- **Memory management**: Store leftovers at each depth for reconstruction
+- **Comparison tracking**: Count all comparisons during sorting at each depth
+
+## Phase 2: Recursive Chain Reconstruction (Backtracking)
+
+**Important**: Phase 2 must reconstruct the sequence by backtracking through all depths in reverse order, starting from the baseline and working back to depth 0. Each depth's reconstruction depends on the result from the previous depth.
+
+### Recursive Reconstruction Process
+- **Start from baseline**: Begin reconstruction from the deepest depth (baseline)
+- **Backtrack through all depths**: Process each depth in reverse order (n, n-1, ..., 0)
+- **Dependency chain**: Each depth's result becomes input for the next depth's reconstruction
+- **Leftover handling**: Each depth must handle its own leftover from Phase 1
+
+### Example with 11 elements (3 depths)
+
+#### Depth 2 Chain Call (Baseline)
+- **Step 4**: Reconstruct from baseline depth 2
   - Input: `[{([2, 4], [6, 7]), ([1, 3], [8, 9])}]` and leftover `[5, 10]`
   - **Step 4a**: Split into rights and lefts
     - Rights: `[([1, 3], [8, 9])]` (sorted)
@@ -84,16 +133,16 @@
   - **Result**: `[[1, 3], [2, 4], [6, 7], [8, 9], [5, 10]]`
   - **Debug output** (if enabled):
     ```
-    [Chain Depth 1] Input: [[2, 4], [6, 7]], [[1, 3], [8, 9]] + leftover: [5, 10]
-    [Chain Depth 1] Rights: [[1, 3], [8, 9]]
-    [Chain Depth 1] Lefts: [[2, 4], [6, 7], [5, 10]]
-    [Chain Depth 1] Jacobsthal sequence: [0, 2, 1]
-    [Chain Depth 1] Result: [[1, 3], [2, 4], [6, 7], [8, 9], [5, 10]]
-    [Chain Depth 1] Binary insertions: 2 comparisons
+    [Chain Depth 2] Input: [[2, 4], [6, 7]], [[1, 3], [8, 9]] + leftover: [5, 10]
+    [Chain Depth 2] Rights: [[1, 3], [8, 9]]
+    [Chain Depth 2] Lefts: [[2, 4], [6, 7], [5, 10]]
+    [Chain Depth 2] Jacobsthal sequence: [0, 2, 1]
+    [Chain Depth 2] Result: [[1, 3], [2, 4], [6, 7], [8, 9], [5, 10]]
+    [Chain Depth 2] Binary insertions: 2 comparisons
     ```
 
-### Depth 0 Chain Call
-- **Step 5**: Reconstruct from depth 0
+#### Depth 1 Chain Call
+- **Step 5**: Reconstruct from depth 1
   - Input: `[[1, 3], [2, 4], [6, 7], [8, 9], [5, 10]]` and leftover `[3]`
   - **Step 5a**: Split into rights and lefts
     - Rights: `[3, 4, 7, 9, 10]` (extract rightmost from each pair)
@@ -113,13 +162,63 @@
   - **Result**: Fully sorted sequence
   - **Debug output** (if enabled):
     ```
-    [Chain Depth 0] Input: [[1, 3], [2, 4], [6, 7], [8, 9], [5, 10]] + leftover: [3]
-    [Chain Depth 0] Rights: [3, 4, 7, 9, 10]
-    [Chain Depth 0] Lefts: [1, 2, 6, 8, 5, 3]
-    [Chain Depth 0] Jacobsthal sequence: [0, 2, 1, 4, 3, 5]
-    [Chain Depth 0] Binary insertions: 5 comparisons
-    [Chain Depth 0] Final result: [1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10]
+    [Chain Depth 1] Input: [[1, 3], [2, 4], [6, 7], [8, 9], [5, 10]] + leftover: [3]
+    [Chain Depth 1] Rights: [3, 4, 7, 9, 10]
+    [Chain Depth 1] Lefts: [1, 2, 6, 8, 5, 3]
+    [Chain Depth 1] Jacobsthal sequence: [0, 2, 1, 4, 3, 5]
+    [Chain Depth 1] Binary insertions: 5 comparisons
+    [Chain Depth 1] Final result: [1, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10]
     ```
+
+### Larger Example: 15 elements (4 depths)
+
+#### Depth 3 Chain Call (Baseline)
+- Input: `[([([2, 3], [4, 5]), ([6, 7], [8, 9])], [([10, 11], [12, 13])])]` + leftover `[14, 15]`
+- Result: `[[2, 3], [4, 5], [6, 7], [8, 9], [10, 11], [12, 13], [14, 15]]`
+
+#### Depth 2 Chain Call
+- Input: Result from depth 3 + leftover `[1]`
+- Result: `[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]`
+
+### Recursive Implementation Strategy
+- **Stack-based approach**: Store depth information and leftovers during Phase 1
+- **Reverse iteration**: Process depths from baseline back to depth 0
+- **State preservation**: Maintain the structure and order from Phase 1
+- **Memory efficiency**: Reuse containers where possible during reconstruction
+
+## Algorithm Structure Overview
+
+### Recursive Depth Calculation
+- **Depth count**: For n elements, approximately log₂(n) depths
+- **Examples**:
+  - 11 elements → 3 depths (log₂(11) ≈ 3.46)
+  - 15 elements → 4 depths (log₂(15) ≈ 3.91)
+  - 31 elements → 5 depths (log₂(31) ≈ 4.95)
+  - 63 elements → 6 depths (log₂(63) ≈ 5.98)
+
+### Phase 1: Recursive Descent
+```
+Depth 0: [elements] → [pairs] + leftover
+Depth 1: [pairs] → [groups of pairs] + leftover
+Depth 2: [groups] → [groups of groups] + leftover
+...
+Depth n: [final group] → baseline reached
+```
+
+### Phase 2: Recursive Ascent
+```
+Depth n: baseline → [reconstructed groups]
+Depth n-1: [groups] + leftover → [reconstructed pairs]
+Depth n-2: [pairs] + leftover → [reconstructed elements]
+...
+Depth 0: [elements] + leftover → final sorted sequence
+```
+
+### Implementation Requirements
+- **Dynamic depth handling**: Algorithm must work with any number of depths
+- **State tracking**: Maintain structure and leftovers from each depth
+- **Recursive functions**: Implement both descent (Phase 1) and ascent (Phase 2)
+- **Memory management**: Handle dynamic allocation for variable depth structures
 
 ## Key Implementation Notes
 
