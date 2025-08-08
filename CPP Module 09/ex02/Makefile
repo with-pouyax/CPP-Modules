@@ -1,23 +1,51 @@
-# ex02/Makefile
-NAME        = PmergeMe
-CXX         = c++
-CXXFLAGS    = -Wall -Wextra -Werror -std=c++98 -g
-SRC         = main.cpp PmergeMe.cpp
-OBJ         = $(SRC:.cpp=.o)
+################################################################################
+######                             PROPERTIES                             ######
+################################################################################
 
-all: $(NAME)
+CXX			= c++
+RM			= rm -rf
+CXXFLAGS	= -Wall -Wextra -Werror -MD -MP -std=c++98
+MAKEFLAGS	= -j$(nproc) --no-print-directory
 
-$(NAME): $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJ)
+NAME		= PMergeMe
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+SRCSDIR		= srcs
 
-clean:
-	rm -f $(OBJ)
+SRCS		= \
+			main.cpp \
+			PmergeMe.cpp \
+			FordJohnsonSorter.cpp \
 
-fclean: clean
-	rm -f $(NAME)
+OBJSDIR		= objs
+OBJS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.o))
+DEPS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.d))
 
-re: fclean all
-.PHONY: all clean fclean re
+#------------------------------------------------------------------------------#
+#------------------------------------RULES-------------------------------------#
+#------------------------------------------------------------------------------#
+
+all		: $(NAME)
+
+debug: 
+	$(MAKE) CXXFLAGS="$(CXXFLAGS) -g"
+
+$(NAME)	: ${OBJS}
+		$(CXX) ${CXXFLAGS} -o $@ $^ 
+
+${OBJSDIR}/%.o	: %.cpp
+		@mkdir -p $(dir $@)
+		${CXX} ${CXXFLAGS} -c $< -o $@
+
+clean	:
+		$(RM) $(OBJSDIR)
+
+fclean	:
+		$(RM) $(OBJSDIR) $(NAME)
+
+re		:
+		$(RM) $(OBJSDIR) $(NAME)
+		$(MAKE) all
+
+-include $(DEPS)
+
+.PHONY	: all clean fclean re
