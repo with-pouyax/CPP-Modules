@@ -95,7 +95,7 @@ echo -e "and the number is the last word in that line"
 echo
 
 comparison_limits=($(limits $total_input_sizes)) # Define an array of maximum allowed comparisons for different input sizes
-executable_name="PmergeMe" # Set the name of the executable to test (in this case "PmergeMe")
+executable_name="PMergeMe" # Set the name of the executable to test (in this case "PMergeMe")
 # Set the range of numbers for generating random inputs
 min_random_value=1
 max_random_value=$total_input_sizes;

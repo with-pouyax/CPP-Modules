@@ -39,6 +39,8 @@
         }
     };
 
+    
+
     class InsertionSchedule
     {
     public:
@@ -254,6 +256,25 @@
         DBlocks _out;
     };
 
+    // Helper to ingest pre-populated integer containers into pipelines.
+    static void ingestVector(const std::vector<int>& values, VectorPipeline& vectorPipeline)
+    {
+        for (size_t i = 0; i < values.size(); ++i)
+        {
+            VBlock valueBlock; valueBlock.push_back(values[i]);
+            vectorPipeline.input().push_back(valueBlock);
+        }
+    }
+
+    static void ingestDeque(const std::deque<int>& values, DequePipeline& dequePipeline)
+    {
+        for (size_t i = 0; i < values.size(); ++i)
+        {
+            DBlock valueBlock; valueBlock.push_back(values[i]);
+            dequePipeline.input().push_back(valueBlock);
+        }
+    }
+
 struct FordJohnsonSorter::Impl
 {
     TokenToIntConverter conv;
@@ -261,20 +282,27 @@ struct FordJohnsonSorter::Impl
     VectorPipeline vec;
     DequePipeline deq;
 
-    void load(int argc, char** argv)
+    void load(const std::vector<int>& vecValues, const std::deque<int>& deqValues)
     {
-        for (int i = 1; i < argc; ++i)
-        {
-            const int n = conv.toPositive(std::string(argv[i]));
-            VBlock vb; vb.push_back(n); vec.input().push_back(vb);
-            DBlock db; db.push_back(n); deq.input().push_back(db);
-        }
+        ingestVector(vecValues, vec);
+        ingestDeque(deqValues, deq);
     }
 
     void run()
     {
         vec.resetCounter();
         vec.output() = vec.sort(vec.input());
+        deq.output() = deq.sort(deq.input());
+    }
+
+    void runVector()
+    {
+        vec.resetCounter();
+        vec.output() = vec.sort(vec.input());
+    }
+
+    void runDeque()
+    {
         deq.output() = deq.sort(deq.input());
     }
 
@@ -291,14 +319,42 @@ struct FordJohnsonSorter::Impl
 FordJohnsonSorter::FordJohnsonSorter(): _p(new Impl) {}
 FordJohnsonSorter::~FordJohnsonSorter() { delete _p; }
 
-void FordJohnsonSorter::loadInputData(int argumentCount, char* argumentValues[])
+void FordJohnsonSorter::loadInputData(const std::vector<int>& valuesVector, const std::deque<int>& valuesDeque)
 {
-    _p->load(argumentCount, argumentValues);
+    _p->load(valuesVector, valuesDeque); 
 }
 
 void FordJohnsonSorter::performSortOperations()
 {
     _p->run();
+}
+
+void FordJohnsonSorter::performVectorSort()
+{
+    _p->runVector();
+}
+
+void FordJohnsonSorter::performDequeSort()
+{
+    _p->runDeque();
+}
+
+void FordJohnsonSorter::performVectorSort(const std::vector<int>& valuesVector)
+{
+    // Reset and ingest only the vector pipeline; leave deque as-is
+    _p->vec.input().clear();    // clear the input vector
+    _p->vec.output().clear();   // clear the output vector
+    ingestVector(valuesVector, _p->vec); // ingest the vector into the vector pipeline
+    _p->runVector();
+}
+
+void FordJohnsonSorter::performDequeSort(const std::deque<int>& valuesDeque)
+{
+    // Reset and ingest only the deque pipeline; leave vector as-is
+    _p->deq.input().clear();
+    _p->deq.output().clear();
+    ingestDeque(valuesDeque, _p->deq);
+    _p->runDeque();
 }
 
 void FordJohnsonSorter::printResults()

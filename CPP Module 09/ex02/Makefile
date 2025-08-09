@@ -15,6 +15,8 @@ SRCS		= \
 			main.cpp \
 			PmergeMe.cpp \
 			FordJohnsonSorter.cpp \
+			FordJohnsonVectorSorter.cpp \
+			FordJohnsonDequeSorter.cpp \
 
 OBJSDIR		= objs
 OBJS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.o))
@@ -28,6 +30,9 @@ all		: $(NAME)
 
 debug: 
 	$(MAKE) CXXFLAGS="$(CXXFLAGS) -g"
+
+count: fclean
+	$(MAKE) CXXFLAGS="$(CXXFLAGS) -DPMERGEME_SHOW_COMPARISONS"
 
 $(NAME)	: ${OBJS}
 		$(CXX) ${CXXFLAGS} -o $@ $^ 
