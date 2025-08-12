@@ -1,30 +1,46 @@
 #include "PmergeMe.hpp"
 #include <stdexcept>
+#include <climits>
+#include <cctype>
 
-namespace {
-    static int toPositive(const std::string& token)
+// Parse a single C-string token into a strictly positive int with overflow checks.
+// Rules: only digits allowed (optional single leading '+'), value in (0..INT_MAX].
+static int parseStrictPositiveInt(const char* token)
+{
+    if (token == 0 || *token == '\0') throw std::invalid_argument("Error");
+
+    // Handle optional leading '+'
+    size_t index = 0;
+    if (token[index] == '+')
     {
-        if (token.empty() || token.find_first_not_of("0123456789") != std::string::npos)
-            throw std::invalid_argument("NaN or Negative: " + token);
-        int value = 0;
-        for (std::string::size_type i = 0; i < token.size(); ++i)
-        {
-            value = value * 10 + (token[i] - '0');
-            if (value < 0) throw std::invalid_argument("Overflow of: " + token);
-        }
-        return value;
+        ++index;
+        if (token[index] == '\0') throw std::invalid_argument("Error");
     }
+
+    int value = 0;
+    for (; token[index] != '\0'; ++index)
+    {
+        const unsigned char ch = static_cast<unsigned char>(token[index]);
+        if (!std::isdigit(ch)) throw std::invalid_argument("Error");
+        const int digit = token[index] - '0';
+        // Overflow guard: value*10 + digit <= INT_MAX
+        if (value > (INT_MAX - digit) / 10) throw std::invalid_argument("Error");
+        value = value * 10 + digit;
+    }
+
+    if (value <= 0) throw std::invalid_argument("Error");
+    return value;
 }
 
 void parseArgsToContainers(int argc, char* argv[], std::vector<int>& outVector, std::deque<int>& outDeque)
-{ // argc = number of arguments, argv = array of arguments, outVector = vector to store the values, outDeque = deque to store the values
+{
+    outVector.clear();
+    outDeque.clear();
 
-    outVector.clear(); // clear the vector
-    outDeque.clear();  // clear the deque
-    for (int i = 1; i < argc; ++i) // loop through the arguments
+    for (int i = 1; i < argc; ++i)
     {
-        const int n = toPositive(std::string(argv[i])); // convert the argument to a positive integer and store it in n
-        outVector.push_back(n);                               // push the value to the vector
-        outDeque.push_back(n);                                // push the value to the dque
+        const int n = parseStrictPositiveInt(argv[i]);
+        outVector.push_back(n);
+        outDeque.push_back(n);
     }
 }
