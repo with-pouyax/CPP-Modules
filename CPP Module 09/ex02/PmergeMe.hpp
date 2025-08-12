@@ -1,7 +1,6 @@
 #ifndef PMERGEME_HPP
 #define PMERGEME_HPP
 
-#include "FordJohnsonSorter.hpp"
 #include <vector>
 #include <deque>
 #include <string>

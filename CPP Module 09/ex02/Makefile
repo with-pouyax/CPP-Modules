@@ -7,14 +7,13 @@ RM			= rm -rf
 CXXFLAGS	= -Wall -Wextra -Werror -MD -MP -std=c++98
 MAKEFLAGS	= -j$(nproc) --no-print-directory
 
-NAME		= PMergeMe
+NAME		= PmergeMe
 
 SRCSDIR		= srcs
 
 SRCS		= \
 			main.cpp \
 			PmergeMe.cpp \
-			FordJohnsonSorter.cpp \
 			FordJohnsonVectorSorter.cpp \
 			FordJohnsonDequeSorter.cpp \
 
@@ -28,18 +27,19 @@ DEPS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.d))
 
 all		: $(NAME)
 
-debug: 
-	$(MAKE) CXXFLAGS="$(CXXFLAGS) -g"
+debug: CXXFLAGS += -g -DPMERGEME_DEBUG -DPMERGEME_SHOW_COMPARISONS
+debug: re
 
-count: fclean
-	$(MAKE) CXXFLAGS="$(CXXFLAGS) -DPMERGEME_SHOW_COMPARISONS"
+count: CXXFLAGS += -DPMERGEME_SHOW_COMPARISONS
+count: re
 
 $(NAME)	: ${OBJS}
 		$(CXX) ${CXXFLAGS} -o $@ $^ 
 
 ${OBJSDIR}/%.o	: %.cpp
-		@mkdir -p $(dir $@)
+		@mkdir -p $(OBJSDIR)
 		${CXX} ${CXXFLAGS} -c $< -o $@
+
 
 clean	:
 		$(RM) $(OBJSDIR)
@@ -47,9 +47,7 @@ clean	:
 fclean	:
 		$(RM) $(OBJSDIR) $(NAME)
 
-re		:
-		$(RM) $(OBJSDIR) $(NAME)
-		$(MAKE) all
+re		: fclean all
 
 -include $(DEPS)
 
