@@ -40,7 +40,8 @@ int main(int argc, char **argv)
             std::cout << "Time to process a range of " << vectorSorter.getInputSize() << " elements with std::vector : " << vectorElapsed << " us" << std::endl;
             std::cout << "Time to process a range of " << dequeSorter.getInputSize()  << " elements with std::deque : "  << dequeElapsed  << " us" << std::endl;
 #ifdef PMERGEME_SHOW_COMPARISONS
-            std::cout << "Number of comparisons: " << vectorSorter.getTotalComparisons() << std::endl;
+            std::cout << "Number of comparisons (vector): " << vectorSorter.getTotalComparisons() << std::endl;
+            std::cout << "Number of comparisons (deque):  " << dequeSorter.getTotalComparisons() << std::endl;
 #endif
             // ___________________________________
         }

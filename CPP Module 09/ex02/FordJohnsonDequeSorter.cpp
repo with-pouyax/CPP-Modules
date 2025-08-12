@@ -6,12 +6,15 @@
 #include <stdexcept>
 #include <map>
 #include <iterator>
+#include <algorithm>
 
-FordJohnsonDequeSorter::FordJohnsonDequeSorter() {}
+FordJohnsonDequeSorter::FordJohnsonDequeSorter()
+    : _in(), _out(), _comparisons(0)
+{}
 FordJohnsonDequeSorter::~FordJohnsonDequeSorter() {}
 
 FordJohnsonDequeSorter::FordJohnsonDequeSorter(const FordJohnsonDequeSorter& other)
-    : _in(other._in), _out(other._out)
+    : _in(other._in), _out(other._out), _comparisons(other._comparisons)
 {
 }
 
@@ -21,6 +24,7 @@ FordJohnsonDequeSorter& FordJohnsonDequeSorter::operator=(const FordJohnsonDeque
     {
         _in = rhs._in;
         _out = rhs._out;
+        _comparisons = rhs._comparisons;
     }
     return *this;
 }
@@ -37,6 +41,7 @@ void FordJohnsonDequeSorter::ingestDeque(const std::deque<int>& values)
 
 void FordJohnsonDequeSorter::runDeque()
 {
+    _comparisons = 0;
     _out.clear();
     DBlocks tmp = _in;
     _out = doSort(tmp);
@@ -48,15 +53,15 @@ void FordJohnsonDequeSorter::dump(const DBlocks& data) const
     for (DBlocks::const_iterator it = a; it != b; ++it)
     {
         for (size_t i = 0; i < it->size(); ++i) std::cout << (*it)[i];
-        if (it + 1 != b) std::cout << ", ";
+        if (it + 1 != b) std::cout << " ";
     }
     std::cout << std::endl;
 }
 
-std::deque<int> FordJohnsonDequeSorter::buildJacobsthalInsertionOrder(int n)
+std::vector<int> FordJohnsonDequeSorter::buildJacobsthalInsertionOrder(int n)
 {
     const int limit = n + 1;
-    std::deque<int> order;
+    std::vector<int> order;
     int a = 0, b = 1;
     while (b < limit)
     {
@@ -75,7 +80,7 @@ FordJohnsonDequeSorter::DBlocksIt FordJohnsonDequeSorter::lowerBound(DBlocksIt f
     {
         Diff step = count / 2;
         DBlocksIt mid = first + step;
-        if ((*mid)[0] < value[0])
+        if (isLessFirst(*mid, value))
         {
             first = ++mid;
             count -= step + 1;
@@ -88,12 +93,18 @@ FordJohnsonDequeSorter::DBlocksIt FordJohnsonDequeSorter::lowerBound(DBlocksIt f
     return first;
 }
 
-bool FordJohnsonDequeSorter::isLessFirst(const DBlock& a, const DBlock& b) const
+bool FordJohnsonDequeSorter::isLessFirst(const DBlock& a, const DBlock& b)
 {
+    ++_comparisons;
     return a[0] < b[0];
 }
 
 FordJohnsonDequeSorter::DBlocks FordJohnsonDequeSorter::doSortWithIds(DBlocks& elements, const std::vector<int>& elementIds, std::vector<int>& outIds)
+{
+    return doSortWithIds(elements, elementIds, outIds, 0);
+}
+
+FordJohnsonDequeSorter::DBlocks FordJohnsonDequeSorter::doSortWithIds(DBlocks& elements, const std::vector<int>& elementIds, std::vector<int>& outIds, int /*depth*/)
 {
     if (elements.size() < 2)
     {
@@ -104,31 +115,32 @@ FordJohnsonDequeSorter::DBlocks FordJohnsonDequeSorter::doSortWithIds(DBlocks& e
     DBlock odd; int oddId = -1; const bool hasOdd = (elements.size() % 2 != 0);
     if (hasOdd) { odd = elements.back(); oddId = elementIds.back(); }
 
-    std::deque<DBlock> smallBlocks; std::vector<int> smallIds;
+    DBlocks smallBlocks; std::vector<int> smallIds;
     DBlocks biggersBlocks; std::vector<int> biggersIds;
     for (size_t i = 0; i + 1 < elements.size(); i += 2)
     {
         DBlock left = elements[i]; int leftId = elementIds[i];
         DBlock right = elements[i + 1]; int rightId = elementIds[i + 1];
-        if (left[0] > right[0]) { std::swap(left, right); std::swap(leftId, rightId); }
+        bool leftLessRight = isLessFirst(left, right);
+        if (!leftLessRight) { std::swap(left, right); std::swap(leftId, rightId); }
         smallBlocks.push_back(left); smallIds.push_back(leftId);
         biggersBlocks.push_back(right); biggersIds.push_back(rightId);
     }
 
     std::vector<int> sortedBiggersIds;
-    biggersBlocks = doSortWithIds(biggersBlocks, biggersIds, sortedBiggersIds);
+    biggersBlocks = doSortWithIds(biggersBlocks, biggersIds, sortedBiggersIds, 1);
 
     std::map<int, size_t> rightIdToIdx;
     for (size_t idx = 0; idx < biggersIds.size(); ++idx) rightIdToIdx[biggersIds[idx]] = idx;
 
     const int chainSize = static_cast<int>(biggersBlocks.size());
-    std::deque<int> jSeq = buildJacobsthalInsertionOrder(hasOdd ? chainSize + 1 : chainSize);
+    std::vector<int> jSeq = buildJacobsthalInsertionOrder(hasOdd ? chainSize + 1 : chainSize);
 
-    std::vector<int> chainIds = sortedBiggersIds; // we make a vector of integers called chainIds and we store sortedBiggersIds in it
+    std::vector<int> chainIds = sortedBiggersIds;
 
-    for (size_t pi = 0; pi < jSeq.size(); ++pi)   // we loop through jSeq
+    for (size_t pi = 0; pi < jSeq.size(); ++pi)
     {
-        DBlocksIt limit; DBlock target; int targetId; 
+        DBlocksIt limit; DBlock target; int targetId;
         if (jSeq[pi] == chainSize)
         { target = odd; targetId = oddId; limit = biggersBlocks.end(); }
         else
@@ -141,7 +153,8 @@ FordJohnsonDequeSorter::DBlocks FordJohnsonDequeSorter::doSortWithIds(DBlocks& e
             if (found == rightIdToIdx.end()) throw std::invalid_argument("Invalid state: missing unsorted partner");
             size_t idx = found->second; target = smallBlocks[idx]; targetId = smallIds[idx];
         }
-    DBlocksIt lo = lowerBound(biggersBlocks.begin(), limit, target);
+
+        DBlocksIt lo = lowerBound(biggersBlocks.begin(), limit, target);
         size_t insertPos = static_cast<size_t>(lo - biggersBlocks.begin());
         biggersBlocks.insert(lo, target);
         chainIds.insert(chainIds.begin() + insertPos, targetId);
@@ -172,7 +185,7 @@ void FordJohnsonDequeSorter::printResults() const
 
 int FordJohnsonDequeSorter::getTotalComparisons() const
 {
-    return 0;
+    return _comparisons;
 }
 
 size_t FordJohnsonDequeSorter::getInputSize() const

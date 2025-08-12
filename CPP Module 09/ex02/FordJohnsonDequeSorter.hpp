@@ -30,18 +30,20 @@ private:
 
     DBlocks _in;
     DBlocks _out;
+    int _comparisons;
 
     void ingestDeque(const std::deque<int>& values);
     void runDeque();
     void dump(const DBlocks& data) const;
 
-    static std::deque<int> buildJacobsthalInsertionOrder(int n);
+    static std::vector<int> buildJacobsthalInsertionOrder(int n);
 
     DBlocks doSort(DBlocks& elements);
     DBlocks doSortWithIds(DBlocks& elements, const std::vector<int>& elementIds, std::vector<int>& outIds);
+    DBlocks doSortWithIds(DBlocks& elements, const std::vector<int>& elementIds, std::vector<int>& outIds, int depth);
     DBlocksIt lowerBound(DBlocksIt first, DBlocksIt last, const DBlock& value);
 
-    bool isLessFirst(const DBlock& a, const DBlock& b) const;
+    bool isLessFirst(const DBlock& a, const DBlock& b);
 };
 
 #endif

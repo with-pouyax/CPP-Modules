@@ -2,53 +2,53 @@
 ######                             PROPERTIES                             ######
 ################################################################################
 
-CXX			= c++
-RM			= rm -rf
-CXXFLAGS	= -Wall -Wextra -Werror -MD -MP -std=c++98
-MAKEFLAGS	= -j$(nproc) --no-print-directory
+CXX      = c++
+RM       = rm -rf
 
-NAME		= PmergeMe
+# Mandatory flags per project rules
+# Add optional defines via DEFINES from special targets (count/debug)
+CXXFLAGS = -Wall -Wextra -Werror -MD -MP -std=c++98 $(DEFINES)
 
-SRCSDIR		= srcs
+NAME     = PmergeMe
 
-SRCS		= \
-			main.cpp \
-			PmergeMe.cpp \
-			FordJohnsonVectorSorter.cpp \
-			FordJohnsonDequeSorter.cpp \
+SRCS = \
+  main.cpp \
+  PmergeMe.cpp \
+  FordJohnsonVectorSorter.cpp \
+  FordJohnsonDequeSorter.cpp
 
-OBJSDIR		= objs
-OBJS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.o))
-DEPS		= $(addprefix $(OBJSDIR)/, $(SRCS:.cpp=.d))
+OBJDIR = objs
+OBJS   = $(addprefix $(OBJDIR)/,$(SRCS:.cpp=.o))
+DEPS   = $(OBJS:.o=.d)
 
-#------------------------------------------------------------------------------#
-#------------------------------------RULES-------------------------------------#
-#------------------------------------------------------------------------------#
+################################################################################
+######                               RULES                                ######
+################################################################################
 
-all		: $(NAME)
+all: $(NAME)
 
-debug: CXXFLAGS += -g -DPMERGEME_DEBUG -DPMERGEME_SHOW_COMPARISONS
-debug: re
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-count: CXXFLAGS += -DPMERGEME_SHOW_COMPARISONS
+$(OBJDIR)/%.o: %.cpp
+	@mkdir -p $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	$(RM) $(OBJDIR)
+
+fclean:
+	$(RM) $(OBJDIR) $(NAME)
+
+re: fclean all
+
+# Convenience targets
+count: DEFINES += -DPMERGEME_SHOW_COMPARISONS
 count: re
 
-$(NAME)	: ${OBJS}
-		$(CXX) ${CXXFLAGS} -o $@ $^ 
-
-${OBJSDIR}/%.o	: %.cpp
-		@mkdir -p $(OBJSDIR)
-		${CXX} ${CXXFLAGS} -c $< -o $@
-
-
-clean	:
-		$(RM) $(OBJSDIR)
-
-fclean	:
-		$(RM) $(OBJSDIR) $(NAME)
-
-re		: fclean all
+debug: DEFINES += -g -DPMERGEME_DEBUG -DPMERGEME_SHOW_COMPARISONS
+debug: re
 
 -include $(DEPS)
 
-.PHONY	: all clean fclean re
+.PHONY: all clean fclean re count debug
