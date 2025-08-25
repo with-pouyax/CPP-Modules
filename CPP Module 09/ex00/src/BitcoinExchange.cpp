@@ -1,5 +1,5 @@
-#include "BitcoinExchange.hpp"
-#include "Date.hpp"
+#include "../include/BitcoinExchange.hpp"
+#include "../include/Date.hpp"
 
 // ============================================================================
 // BitcoinExchange Class Implementation
@@ -74,10 +74,16 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) co
 	
 	// Handle negative values including negative zero and negative infinity
 	// String-based check for negative zero to handle IEEE 754 -0 == 0 issue
-	if (valueStr[0] == '-' || value < 0)
+	if ((valueStr[0] == '-' && valueStr != "-0") || value < 0)
 	{
 		printError("not a positive number.");
 		return false;
+	}
+	
+	// Normalize -0 to 0
+	if (valueStr == "-0")
+	{
+		value = 0.0f;
 	}
 	
 	// Handle positive infinity and values > 1000
@@ -90,15 +96,17 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) co
 	return true;
 }
 
+
+
 // Phase 4: CSV Database Loading
 void BitcoinExchange::loadDatabase(const std::string& filename)
 {
 	std::ifstream file(filename.c_str());     //make a object of ifstream which is used to open the file
 	if (!file.is_open())
-		throw std::runtime_error("could not open database file");
+		throw std::runtime_error("could not open database file"); //c++98
 	
 	std::string line;                           // we use line to store each line of the file
-	bool firstLine = true;                      //
+	bool firstLine = true;                      // we use this bool to skip the first line of the file
 	
 	while (std::getline(file, line))    // read the file line by line until the end of the file
 	{
@@ -121,7 +129,9 @@ void BitcoinExchange::loadDatabase(const std::string& filename)
 		std::string rateStr = line.substr(commaPos + 1);     // we save the after comma part of the line to rateStr
 
 		// Trust the data format since exercise guarantees data.csv will never change
-		Date date(dateStr); // we parse and save the date in date object
+		Date date(dateStr); // we make a date object and parse the dateStr and save it in date object
+		                    // we parse and save the date in date object
+							//now we saved the date in date object, in _year, _month, _day
 		float rate = std::atof(rateStr.c_str()); // we convert the rateStr to float and save it in rate
 		_data[date] = rate; //date(object) will be the key and rate will be the value in the _data, which is a map
 	}
@@ -131,6 +141,9 @@ void BitcoinExchange::loadDatabase(const std::string& filename)
 	if (_data.empty())  		//this happen only if we have no data in data.csv
 		throw std::runtime_error("no valid data loaded from database");
 }
+
+
+
 
 // Phase 6: Date Lookup & Calculation
 float BitcoinExchange::getExchangeRate(const Date& date) const
@@ -150,7 +163,7 @@ float BitcoinExchange::getExchangeRate(const Date& date) const
 		return it->second; // we return the value of the element
 	}
 	
-	// if the date is before the first date in the map, we newer go to above if condition
+	// if the date is before the first date in the map, we nevr go to above if condition
     // because it->first will never equal to date
 	if (it == _data.begin())
 		throw std::runtime_error("no earlier data available");
@@ -213,8 +226,8 @@ void BitcoinExchange::processLine(const std::string& line) const
 	std::string valueStr = line.substr(pipePos + 2);
 	
 	// Trim whitespace from both date and value strings
-	dateStr = trimWhitespace(dateStr); 
-	valueStr = trimWhitespace(valueStr);
+	dateStr = trimWhitespace(dateStr);                   // we trim the whitespace from both sides of the dateStr
+	valueStr = trimWhitespace(valueStr);                  // we trim the whitespace from both sides of the valueStr
 	
 	// Validate date
 	Date date;         // we create a date object
@@ -253,32 +266,32 @@ void BitcoinExchange::processInputFile(const std::string& filename)
 	if (!file.is_open())
 		throw std::runtime_error("could not open file.");
 	
-	std::string line;
-	bool foundHeader = false;
-	bool hasAnyData = false;
-	bool headerErrorReported = false;
+	std::string line;                                       // we use this string to store each line of the file
+	bool foundHeader = false;                               // we use this bool to check if we found the header
+	bool hasAnyData = false;                                // we use this bool to check if we have any data
+	bool headerErrorReported = false;                       // we use this bool to check if we reported the header error
 	
 	while (std::getline(file, line))              //loop through all lines in the file
 	{
 		// Skip empty lines
-		if (line.empty())
+		if (line.empty()) // if the line is empty, we skip the rest of the loop
 			continue;
 		
 		// Look for header on first non-empty line
-		if (!foundHeader && !headerErrorReported) //if still not found header and not reported error
+		if (!foundHeader && !headerErrorReported) //if we didn't find the header and we didn't reported the header error
 		{
-			std::string trimmed = trimWhitespace(line);  // trim the whitespace from the line
-			if (trimmed == "date | value")
+			std::string trimmed = trimWhitespace(line);  // trim the whitespace from the line and save it in trimmed
+			if (trimmed == "date | value")                   // if the trimmed line is equal to "date | value"
 			{
-				foundHeader = true;
-				continue; // go to next iteration
+				foundHeader = true;                          // we set foundHeader to true
+				continue; // go to next iteration            // we skip the rest of the loop and go to next iteration
 			}
-			else
+			else // if the trimmed line is not equal to "date | value"
 			{
 				// Wrong header format - report error and skip this line
 				printError("invalid header format: expected 'date | value'");
-				headerErrorReported = true;
-				continue; // Skip the wrong header line to avoid double error
+				headerErrorReported = true;                   // we set headerErrorReported to true
+				continue;
 			}
 		}
 		

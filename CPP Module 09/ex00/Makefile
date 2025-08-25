@@ -14,10 +14,11 @@ NAME = btc
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -MMD -MP
-DEBUGFLAGS = -Wall -Wextra -std=c++98 -MMD -MP -g -O0
+DEBUGFLAGS = -Wall -Wextra -std=c++98 -MMD -MP
 
-SRCDIR = .
-SRCS = main.cpp BitcoinExchange.cpp Date.cpp
+SRCDIR = src
+INCDIR = include
+SRCS = $(SRCDIR)/main.cpp $(SRCDIR)/BitcoinExchange.cpp $(SRCDIR)/Date.cpp
 OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
 
@@ -30,6 +31,9 @@ $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 
 %.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(SRCDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:

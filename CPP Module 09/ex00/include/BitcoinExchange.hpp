@@ -3,15 +3,8 @@
 
 # include <iostream>
 # include <fstream>
-# include <sstream>
-# include <string>
 # include <map>
-# include <algorithm>
-# include <cstdlib>
-# include <climits>
 # include <cfloat>
-# include <limits>
-# include <new>
 # include "Date.hpp"
 
 // Macro to simulate new allocation failure for testing
@@ -45,4 +38,4 @@ public:
 	std::string trimWhitespace(const std::string& str) const;
 };
 
-#endif 
+#endif
