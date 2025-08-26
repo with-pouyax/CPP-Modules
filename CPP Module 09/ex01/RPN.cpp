@@ -115,8 +115,10 @@ int RPN::evaluate(const std::string& expression) {
                 throw std::runtime_error("Not enough operands for operator: " + token);
             }
             // we take first two elements from stack and store in a and b
-            int b = _stack.pop();
-            int a = _stack.pop();
+            int b = _stack.top();
+            _stack.pop();
+            int a = _stack.top();
+            _stack.pop();
             //=========Debugging=========
 #ifdef DEBUG
             std::cout << "POPPING " << b << " b = " << b << std::endl;

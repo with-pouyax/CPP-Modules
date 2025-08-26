@@ -1,50 +1,53 @@
 #ifndef RPN_HPP
 #define RPN_HPP
 
-#include <list>
+#include <string>
 #include <iostream>
 
-template<typename T>
+// Custom stack implementation without STL containers
 class Stack {
 private:
-    std::list<T> _container;
+    static const int MAX_SIZE = 1000;
+    int _data[MAX_SIZE];
+    int _top;
 
 public:
-    Stack() {}
+    Stack() : _top(-1) {}
     ~Stack() {}
     
-    void push(const T& value) {
-        _container.push_back(value);
+    void push(int value) {
+        if (_top >= MAX_SIZE - 1) {
+            throw std::runtime_error("Stack overflow");
+        }
+        _data[++_top] = value;
     }
     
-    T pop() {
-        if (_container.empty()) {
+    int pop() {
+        if (empty()) {
             throw std::runtime_error("Stack is empty");
         }
-        T value = _container.back();
-        _container.pop_back();
-        return value;
+        return _data[_top--];
     }
     
-    T top() const {
-        if (_container.empty()) {
+    int top() const {
+        if (empty()) {
             throw std::runtime_error("Stack is empty");
         }
-        return _container.back();
+        return _data[_top];
     }
     
     bool empty() const {
-        return _container.empty();
+        return _top == -1;
     }
     
     size_t size() const {
-        return _container.size();
+        return _top + 1;
     }
 };
 
 class RPN {
 private:
-    Stack<int> _stack;                                               // stack of integers
+    Stack _stack;                                               // stack of integers
     
     bool isOperator(const std::string& token);                       // check if the token is an operator
     int performOperation(int a, int b, const std::string& op);       // perform the operation

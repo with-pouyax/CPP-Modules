@@ -27,4 +27,4 @@ re: fclean all
 debug: CFLAGS += $(DFLAGS)
 debug: re
 
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re debug 
