@@ -11,9 +11,9 @@ int main(int argc, char* argv[]) {
     std::string expression = argv[1];
     
     try {
-        RPN calculator;
-        int result = calculator.evaluate(expression);
-        std::cout << result << std::endl;
+        RPN calculator;                                    // Create a RPN calculator object
+        int result = calculator.evaluate(expression);      // pass the expression to the evaluate method of the RPN calculator and store the result in the result variable
+        std::cout << result << std::endl;                  // print the result
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

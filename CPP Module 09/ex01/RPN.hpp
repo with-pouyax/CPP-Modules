@@ -2,7 +2,6 @@
 #define RPN_HPP
 
 #include <list>
-#include <string>
 #include <iostream>
 
 template<typename T>
@@ -45,18 +44,20 @@ public:
 
 class RPN {
 private:
-    Stack<int> _stack;
+    Stack<int> _stack;                                               // stack of integers
     
-    bool isOperator(const std::string& token);
-    int performOperation(int a, int b, const std::string& op);
-    bool isValidToken(const std::string& token);
+    bool isOperator(const std::string& token);                       // check if the token is an operator
+    int performOperation(int a, int b, const std::string& op);       // perform the operation
+    bool isValidToken(const std::string& token);                     // check if the token is valid
 
 public:
+    // orthodox canonical form
     RPN();
     ~RPN();
     RPN(const RPN& other);
     RPN& operator=(const RPN& other);
     
+    // evaluate the expression
     int evaluate(const std::string& expression);
 };
 
