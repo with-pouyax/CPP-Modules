@@ -1,7 +1,9 @@
 #include "FordJohnsonVectorSorter.hpp"
 
 #include <iostream>
-#include <map>
+#include <vector>
+#include <utility>
+#include <algorithm>
 
 #ifdef PMERGEME_DEBUG
 // ============================ DEBUG HELPERS =============================
@@ -264,9 +266,9 @@ FordJohnsonVectorSorter::VBlocks FordJohnsonVectorSorter::doSortWithIds(VBlocks&
     
     
     // Map rightId to index in smallBlocks/smallIds
-    std::map<int, size_t> rightIdToIdx;           // we create a map of integers to size_t called rightIdToIdx
-    for (size_t idx = 0; idx < biggersIds.size(); ++idx) rightIdToIdx[biggersIds[idx]] = idx; // we loop through biggersIds and we assign the index of the element to the map
-                                                                                              // so now we have a map like this: {1: 0, 2: 1, 3: 2, 4: 3, 5: 4}
+    std::vector<std::pair<int, size_t> > rightIdToIdx;           // we create a vector of pairs of integers and size_t called rightIdToIdx
+    for (size_t idx = 0; idx < biggersIds.size(); ++idx) rightIdToIdx.push_back(std::make_pair(biggersIds[idx], idx)); // we loop through biggersIds and we assign the index of the element to the vector
+                                                                                              // so now we have a vector like this: {{1, 0}, {2, 1}, {3, 2}, {4, 3}, {5, 4}}
                                                                                               // so it shows which biggerId is related to which smallId
 
     const int chainSize = static_cast<int>(biggersBlocks.size());     // we make a constant integer called chainSize and we assign it the size of biggersBlocks
@@ -324,7 +326,13 @@ for (size_t pi = 0; pi < jSeq.size(); ++pi) // we loop through jSeq
                                                                                    // so our range is always from begin to limit
                                                                                    
             
-            std::map<int, size_t>::iterator found = rightIdToIdx.find(idOfBiggerWhosePartnerIsNext); // we find the index of the idOfBiggerWhosePartnerIsNext in rightIdToIdx and we store it in found
+            std::vector<std::pair<int, size_t> >::iterator found = rightIdToIdx.end();
+            for (std::vector<std::pair<int, size_t> >::iterator it = rightIdToIdx.begin(); it != rightIdToIdx.end(); ++it) {
+                if (it->first == idOfBiggerWhosePartnerIsNext) {
+                    found = it;
+                    break;
+                }
+            } // we find the index of the idOfBiggerWhosePartnerIsNext in rightIdToIdx and we store it in found
             if (found == rightIdToIdx.end()) throw std::invalid_argument("Invalid state: missing unsorted partner"); // if we don't find the id, we throw an error
             size_t idx = found->second; // we store the index of the idOfBiggerWhosePartnerIsNext in rightIdToIdx in idx
             target = smallBlocks[idx]; // we find the value of this index in smallBlocks and we store it in target

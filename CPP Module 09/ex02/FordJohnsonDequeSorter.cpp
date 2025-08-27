@@ -1,7 +1,8 @@
 #include "FordJohnsonDequeSorter.hpp"
 
 #include <iostream>
-#include <map>
+#include <vector>
+#include <utility>
 #include <algorithm>
 
 FordJohnsonDequeSorter::FordJohnsonDequeSorter()
@@ -126,8 +127,8 @@ FordJohnsonDequeSorter::DBlocks FordJohnsonDequeSorter::doSortWithIds(DBlocks& e
     std::vector<int> sortedBiggersIds;
     biggersBlocks = doSortWithIds(biggersBlocks, biggersIds, sortedBiggersIds, 1);
 
-    std::map<int, size_t> rightIdToIdx;
-    for (size_t idx = 0; idx < biggersIds.size(); ++idx) rightIdToIdx[biggersIds[idx]] = idx;
+    std::vector<std::pair<int, size_t> > rightIdToIdx;
+    for (size_t idx = 0; idx < biggersIds.size(); ++idx) rightIdToIdx.push_back(std::make_pair(biggersIds[idx], idx));
 
     const int chainSize = static_cast<int>(biggersBlocks.size());
     std::vector<int> jSeq = buildJacobsthalInsertionOrder(hasOdd ? chainSize + 1 : chainSize);
@@ -145,7 +146,13 @@ FordJohnsonDequeSorter::DBlocks FordJohnsonDequeSorter::doSortWithIds(DBlocks& e
             size_t upperPos = 0; while (upperPos < chainIds.size() && chainIds[upperPos] != upperIdStable) ++upperPos;
             if (upperPos >= chainIds.size()) throw std::invalid_argument("Invalid state: missing sorted partner");
             limit = biggersBlocks.begin() + static_cast<std::ptrdiff_t>(upperPos);
-            std::map<int, size_t>::iterator found = rightIdToIdx.find(upperIdStable);
+            std::vector<std::pair<int, size_t> >::iterator found = rightIdToIdx.end();
+            for (std::vector<std::pair<int, size_t> >::iterator it = rightIdToIdx.begin(); it != rightIdToIdx.end(); ++it) {
+                if (it->first == upperIdStable) {
+                    found = it;
+                    break;
+                }
+            }
             if (found == rightIdToIdx.end()) throw std::invalid_argument("Invalid state: missing unsorted partner");
             size_t idx = found->second; target = smallBlocks[idx]; targetId = smallIds[idx];
         }
