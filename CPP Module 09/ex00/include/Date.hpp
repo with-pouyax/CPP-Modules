@@ -1,15 +1,15 @@
 #ifndef DATE_HPP
 # define DATE_HPP
 
-# include <string>
+//# include <string>
 # include <stdexcept>
-# include <cctype>
 # include <cstdlib>
-# include <new>
+
+//# include <new>
 
 // Macro to simulate new allocation failure for testing
 // Usage: std::string dateStr = FNNEW();//line.substr(0, commaPos);
-# define FNNEW() (throw std::bad_alloc(), std::string())
+//# define FNNEW() (throw std::bad_alloc(), std::string())
 
 class Date{
 

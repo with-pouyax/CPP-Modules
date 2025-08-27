@@ -14,7 +14,6 @@ NAME = btc
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -MMD -MP
-DEBUGFLAGS = -Wall -Wextra -std=c++98 -MMD -MP
 
 SRCDIR = src
 INCDIR = include
@@ -23,9 +22,6 @@ OBJS = $(SRCS:.cpp=.o)
 DEPS = $(SRCS:.cpp=.d)
 
 all: $(NAME)
-
-debug: fclean
-	$(MAKE) CXXFLAGS="$(DEBUGFLAGS)" $(NAME)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
@@ -46,4 +42,4 @@ re: fclean all
 
 -include $(DEPS)
 
-.PHONY: all clean fclean re debug 
+.PHONY: all clean fclean re 
