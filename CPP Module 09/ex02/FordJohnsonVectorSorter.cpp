@@ -1,11 +1,7 @@
 #include "FordJohnsonVectorSorter.hpp"
 
 #include <iostream>
-#include <vector>
-#include <stdexcept>
 #include <map>
-#include <iterator>
-#include <algorithm>
 
 #ifdef PMERGEME_DEBUG
 // ============================ DEBUG HELPERS =============================
@@ -72,7 +68,7 @@ FordJohnsonVectorSorter& FordJohnsonVectorSorter::operator=(const FordJohnsonVec
 
 void FordJohnsonVectorSorter::ingestVector(const std::vector<int>& values) // values is our input vector of integers
 {
-    _in.clear();
+    _in.clear();                               // _in is our a vector of vectors of integers
     for (size_t i = 0; i < values.size(); ++i) // we loop through the input vector
     {
         VBlock valueBlock;                     // we create a vector of integers
@@ -381,8 +377,8 @@ FordJohnsonVectorSorter::VBlocks FordJohnsonVectorSorter::doSort(VBlocks& elemen
 
 void FordJohnsonVectorSorter::performSort(const std::vector<int>& valuesVector)
 {
-    ingestVector(valuesVector);
-    runVector();
+    ingestVector(valuesVector); // we store the values in vector of vectors of integers
+    runVector();                       // we sort the values
 }
 
 void FordJohnsonVectorSorter::printResults() const

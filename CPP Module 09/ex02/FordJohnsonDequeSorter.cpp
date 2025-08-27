@@ -1,11 +1,7 @@
 #include "FordJohnsonDequeSorter.hpp"
 
 #include <iostream>
-#include <deque>
-#include <vector>
-#include <stdexcept>
 #include <map>
-#include <iterator>
 #include <algorithm>
 
 FordJohnsonDequeSorter::FordJohnsonDequeSorter()

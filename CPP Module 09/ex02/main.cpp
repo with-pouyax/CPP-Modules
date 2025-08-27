@@ -7,14 +7,14 @@
 
 int main(int argc, char **argv)
 {
-    if (argc >= 2) // if we have at least 2 arguments (program name and list of positive integers)
+    if (argc >= 2)                             // if we have at least 2 arguments (program name and list of positive integers)
     {
         FordJohnsonVectorSorter vectorSorter; // we create a vector sorter object
         FordJohnsonDequeSorter dequeSorter;   // we create a deque sorter object
         try {
             // ___________ PARSING ___________
-            std::vector<int> valuesVector; // vector to store the values
-            std::deque<int> valuesDeque;   // deque to store the values
+            std::vector<int> valuesVector;    // vector to store the values
+            std::deque<int> valuesDeque;      // deque to store the values
             parseArgsToContainers(argc, argv, valuesVector, valuesDeque); // parse the input and store it in our containers
             // _______________________________
 
