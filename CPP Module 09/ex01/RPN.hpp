@@ -1,49 +1,14 @@
 #ifndef RPN_HPP
 #define RPN_HPP
 
-#include <string>
 #include <iostream>
+#include <string>
+#include <stack>
+#include <list>
 
-// Custom stack implementation without STL containers
-class Stack {
-private:
-    static const int MAX_SIZE = 1000;
-    int _data[MAX_SIZE];
-    int _top;
-
-public:
-    Stack() : _top(-1) {}
-    ~Stack() {}
-    
-    void push(int value) {
-        if (_top >= MAX_SIZE - 1) {
-            throw std::runtime_error("Stack overflow");
-        }
-        _data[++_top] = value;
-    }
-    
-    int pop() {
-        if (empty()) {
-            throw std::runtime_error("Stack is empty");
-        }
-        return _data[_top--];
-    }
-    
-    int top() const {
-        if (empty()) {
-            throw std::runtime_error("Stack is empty");
-        }
-        return _data[_top];
-    }
-    
-    bool empty() const {
-        return _top == -1;
-    }
-    
-    size_t size() const {
-        return _top + 1;
-    }
-};
+// Custom stack using std::stack with std::list as container
+typedef std::stack<int, std::list<int> > Stack; // std::stack<int, std::list<int> > means we are using a stack of integers with a list of integers as the container
+                                                // typedef is used to give a new name to a type, which is Stack
 
 class RPN {
 private:

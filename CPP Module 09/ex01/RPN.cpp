@@ -1,6 +1,5 @@
 #include "RPN.hpp"
 #include <sstream>
-#include <stdexcept>
 #include <limits>
 
 RPN::RPN() {}
@@ -115,8 +114,8 @@ int RPN::evaluate(const std::string& expression) {
                 throw std::runtime_error("Not enough operands for operator: " + token);
             }
             // we take first two elements from stack and store in a and b
-            int b = _stack.top();
-            _stack.pop();
+            int b = _stack.top();                                       // what top does is it return the top element of the stack
+            _stack.pop();                                               // what pop does is it remove the top element of the stack
             int a = _stack.top();
             _stack.pop();
             //=========Debugging=========
@@ -159,4 +158,4 @@ int RPN::evaluate(const std::string& expression) {
 #endif
     
     return _stack.top();
-} 
+}
